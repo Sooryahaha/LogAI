@@ -15,6 +15,21 @@ LogAI is a high-performance, modular security tool designed to detect sensitive 
 
 ---
 
+## 📘 Detailed Guides
+For a deep dive into the project, please refer to these specialized documents:
+- [**PROJECT_BREAKDOWN.md**](file:///Users/sooryapersonal/Desktop/asdip/PROJECT_BREAKDOWN.md): A file-by-line explanation of every code block and its importance.
+- [**VSCODE_GUIDE.md**](file:///Users/sooryapersonal/Desktop/asdip/VSCODE_GUIDE.md): A step-by-step guide to setting up and running the project in VS Code.
+
+---
+
+## 🤖 How AI is Integrated
+LogAI uses a hybrid approach to intelligence:
+
+1.  **AI Layer (Ollama)**: When a scan is complete, the `InsightEngine` sends a summary of findings to a local **Ollama** instance (e.g., Llama3). This layer generates a natural language summary and 3-5 high-quality, actionable insights. This happens completely locally, ensuring your security data stays private.
+2.  **Rule-Based Layer (Fallback)**: If Ollama is not present, the system immediately switches to a deterministic, rule-based generator. This ensures you always receive valid security guidance even without AI.
+
+---
+
 ## 📂 Core Logic Breakdown (Line-by-Line)
 
 ### 1. `backend/app/api/analyze.py` (The Orchestrator)
