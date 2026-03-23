@@ -43,14 +43,15 @@
   --info: #000000;
 
   /* Typography */
-  --font-main: 'JetBrains Mono', 'Fira Code', 'Inter', -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Space Mono', 'Share Tech Mono', 'JetBrains Mono', monospace;
+  --font-cyber: 'Share Tech Mono', 'Space Mono', monospace;
 
   /* Spacing */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 0px; /* Sharp corners for cyber look */
+  --radius-xl: 0px;
 
   /* Shadows - Neobrutalism / Clean borders */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -95,11 +96,13 @@ body {
 }
 
 .header h1 {
+  font-family: var(--font-cyber);
   font-size: 2.2rem;
   font-weight: 800;
   color: #000;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
   margin-bottom: 8px;
+  text-transform: uppercase;
 }
 
 .header .subtitle {
@@ -150,6 +153,20 @@ body {
   padding: 24px;
   box-shadow: 6px 6px 0px rgba(0, 0, 0, 1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0), rgba(0, 255, 0, 0), rgba(0, 0, 255, 0));
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.3;
 }
 
 .glass-card:hover {
@@ -483,31 +500,44 @@ body {
 
 .stat-card {
   background: var(--bg-primary);
-  border: 2px solid var(--border-glass);
+  border: 2px solid var(--border-active);
   border-radius: 0;
-  padding: 24px 16px;
+  padding: 12px 8px;
   text-align: center;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 120px; /* Ensure enough width for CRITICAL */
+  flex: 1;
+  overflow: hidden;
 }
 
 .stat-card:hover {
-  border-color: #000;
+  background: #f9fafb;
+  transform: translateY(-2px);
 }
 
 .stat-value {
-  font-size: 2.5rem;
+  font-family: var(--font-cyber);
+  font-size: 1.5rem; /* Further reduced from 1.75rem for safety */
   font-weight: 900;
-  line-height: 1;
-  margin-bottom: 8px;
+  line-height: 1.1;
+  margin-bottom: 4px;
   color: #000;
+  word-break: break-all;
+  white-space: normal; /* Allow wrapping instead of truncation */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stat-label {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
+  letter-spacing: 0.1em;
+  font-weight: 800;
 }
 
 /* ── Risk level colors ──────────────────────────────────────────────────── */
@@ -652,10 +682,11 @@ body {
 .findings-table th {
   background: #f9fafb;
   color: #000;
+  font-family: var(--font-cyber);
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   padding: 12px 16px;
   text-align: left;
   border-bottom: 2px solid #000;
@@ -704,8 +735,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 16px;
+  padding: 4px 12px;
   border-radius: 0;
+  font-family: var(--font-cyber);
   font-size: 0.8rem;
   font-weight: 800;
   text-transform: uppercase;

@@ -19,13 +19,13 @@ export default function InsightsPanel({ data }) {
     typeCounts[f.type] = (typeCounts[f.type] || 0) + 1;
   }
 
-  const actionIcon = { masked: '[M]', blocked: '[B]', allowed: '[A]' };
+  const actionIcon = { masked: '🔒', blocked: '🛑', allowed: '✅' };
 
   return (
     <div className="glass-card slide-up insights-panel">
       <div className="card-title">
-        <span className="icon"></span>
-        SECURITY INSIGHTS
+        <span className="icon">🧠</span>
+        Security Insights
       </div>
 
       {/* Summary */}
@@ -123,7 +123,7 @@ export default function InsightsPanel({ data }) {
       <ul className="insight-list">
         {insights.map((insight, idx) => (
           <li key={idx} className="insight-item">
-            <span className="insight-icon">{'>>'}</span>
+            <span className="insight-icon">⚠️</span>
             {insight}
           </li>
         ))}

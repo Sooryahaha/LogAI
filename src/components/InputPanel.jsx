@@ -1,49 +1,49 @@
 import { useState, useRef } from 'react';
 
 const INPUT_TYPES = [
-  { key: 'log', label: 'LOG', desc: 'Analyze log files' },
-  { key: 'text', label: 'TEXT', desc: 'Analyze plain text' },
-  { key: 'file', label: 'FILE', desc: 'Upload a file' },
-  { key: 'sql', label: 'SQL', desc: 'Analyze SQL queries' },
-  { key: 'chat', label: 'CHAT', desc: 'Analyze chat messages' },
+  { key: 'log', label: '📋 Log', desc: 'Analyze log files' },
+  { key: 'text', label: '📝 Text', desc: 'Analyze plain text' },
+  { key: 'file', label: '📁 File', desc: 'Upload a file' },
+  { key: 'sql', label: '🗃️ SQL', desc: 'Analyze SQL queries' },
+  { key: 'chat', label: '💬 Chat', desc: 'Analyze chat messages' },
 ];
 
 const TEST_SCENARIOS = [
   {
     id: 'basic',
-    name: 'BASIC LEAK',
+    name: '🔒 Basic Leak',
     type: 'log',
-    content: `2026-03-10 10:00:01 INFO User login\\nemail=admin@company.com\\npassword=admin123\\napi_key=sk-prod-xyz`
+    content: `2026-03-10 10:00:01 INFO User login\nemail=admin@company.com\npassword=admin123\napi_key=sk-prod-xyz`
   },
   {
     id: 'stack',
-    name: 'STACK TRACE',
+    name: '🛠️ Stack Trace',
     type: 'log',
-    content: `2026-03-10 ERROR NullPointerException at service.java:45\\nDEBUG stack trace: line 45 -> service failed`
+    content: `2026-03-10 ERROR NullPointerException at service.java:45\nDEBUG stack trace: line 45 -> service failed`
   },
   {
     id: 'brute',
-    name: 'BRUTE FORCE',
+    name: '🛡️ Brute Force',
     type: 'log',
-    content: `2026-03-10 INFO login failed for user admin\\n2026-03-10 INFO login failed for user admin\\n2026-03-10 INFO login failed for user admin\\n2026-03-10 INFO login failed for user admin\\n2026-03-10 INFO login failed for user admin`
+    content: `2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin`
   },
   {
     id: 'token',
-    name: 'TOKEN EXPOSURE',
+    name: '🔑 Token Exposure',
     type: 'log',
-    content: `INFO token=abc123xyz\\nINFO api_key=sk-test-987654`
+    content: `INFO token=abc123xyz\nINFO api_key=sk-test-987654`
   },
   {
     id: 'clean',
-    name: 'CLEAN LOG',
+    name: '✅ Clean Log',
     type: 'log',
-    content: `2026-03-10 INFO Server started successfully\\n2026-03-10 INFO Health check passed`
+    content: `2026-03-10 INFO Server started successfully\n2026-03-10 INFO Health check passed`
   },
   {
     id: 'mixed',
-    name: 'MIXED CASE',
+    name: '🎭 Mixed Case',
     type: 'log',
-    content: `2026-03-10 INFO User login\\nemail=user@test.com\\npassword=pass123\\n2026-03-10 ERROR Exception at controller.java:22\\nDEBUG mode enabled\\ntoken=xyz-token-123`
+    content: `2026-03-10 INFO User login\nemail=user@test.com\npassword=pass123\n2026-03-10 ERROR Exception at controller.java:22\nDEBUG mode enabled\ntoken=xyz-token-123`
   }
 ];
 
@@ -108,8 +108,8 @@ export default function InputPanel({ onAnalyze, isLoading }) {
   return (
     <div className="input-panel glass-card">
       <div className="card-title">
-        <span className="icon"></span>
-        INPUT ANALYSIS
+        <span className="icon">🔍</span>
+        Input Analysis
       </div>
 
       {/* Type Selector */}
@@ -138,9 +138,9 @@ export default function InputPanel({ onAnalyze, isLoading }) {
             onClick={() => fileInputRef.current?.click()}
             id="file-drop-zone"
           >
-            <div className="drop-icon">UPLOAD</div>
+            <div className="drop-icon">📂</div>
             <div className="drop-text">
-              Drop a file here or click to scan
+              Drop a file here or click to upload
             </div>
             <div className="drop-hint">.log, .txt, .pdf, .doc supported</div>
           </div>
@@ -191,7 +191,7 @@ export default function InputPanel({ onAnalyze, isLoading }) {
             onClick={() => { setContent(''); setFileName(''); }}
             id="scenario-btn-clear"
           >
-            CLEAR
+            🗑️ Clear
           </button>
         </div>
       </div>
@@ -199,15 +199,15 @@ export default function InputPanel({ onAnalyze, isLoading }) {
       {/* Options */}
       <div className="options-group">
         <div className="option-toggle" onClick={() => toggleOption('mask')}>
-          <span className="option-label">MASK SENSITIVE</span>
+          <span className="option-label">🔒 Mask sensitive data</span>
           <div className={`toggle-switch ${options.mask ? 'on' : ''}`} />
         </div>
         <div className="option-toggle" onClick={() => toggleOption('block_high_risk')}>
-          <span className="option-label">BLOCK HIGH RISK</span>
+          <span className="option-label">🛡️ Block high risk</span>
           <div className={`toggle-switch ${options.block_high_risk ? 'on' : ''}`} />
         </div>
         <div className="option-toggle" onClick={() => toggleOption('log_analysis')}>
-          <span className="option-label">DEEP LOG ANALYSIS</span>
+          <span className="option-label">📊 Deep log analysis</span>
           <div className={`toggle-switch ${options.log_analysis ? 'on' : ''}`} />
         </div>
       </div>
@@ -222,7 +222,7 @@ export default function InputPanel({ onAnalyze, isLoading }) {
         {isLoading ? (
           <><span className="spinner" /> Analyzing...</>
         ) : (
-          'ANALYZE CONTENT'
+          '🚀 Analyze Content'
         )}
       </button>
     </div>
