@@ -50,13 +50,13 @@ export default function App() {
         <div className="results-area">
           {error && (
             <div className="error-message fade-in">
-              <span>❌</span> {error}
+              <span>ERR</span> {error}
             </div>
           )}
 
           {!result && !isLoading && !error && (
             <div className="results-placeholder glass-card">
-              <div className="placeholder-icon">🛡️</div>
+              <div className="placeholder-icon">SECURE</div>
               <p>
                 Upload a log file or paste content to analyze.
                 The platform will detect sensitive data, score risks,

@@ -17,8 +17,8 @@ export default function ResultDisplay({ data }) {
       {findings.length > 0 && (
         <div className="glass-card">
           <div className="card-title">
-            <span className="icon">🔎</span>
-            Findings ({findings.length})
+            <span className="icon"></span>
+            FINDINGS ({findings.length})
           </div>
           <div style={{ overflowX: 'auto' }}>
             <table className="findings-table" id="findings-table">
@@ -52,8 +52,8 @@ export default function ResultDisplay({ data }) {
       {/* Raw JSON Response */}
       <div className="glass-card">
         <div className="card-title">
-          <span className="icon">📄</span>
-          API Response (JSON)
+          <span className="icon"></span>
+          API RESPONSE (JSON)
         </div>
         <div className="json-display" id="json-display">
           <pre>{JSON.stringify(data, null, 2)}</pre>
