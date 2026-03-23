@@ -1,0 +1,25 @@
+[2024-01-15 10:00:00] AUTH: Login successful for user=jsmith from 192.168.1.10
+[2024-01-15 10:00:15] AUTH: Login successful for user=mwilson from 192.168.1.11
+[2024-01-15 10:01:00] AUTH: Failed login for user=root from 45.33.32.156
+[2024-01-15 10:01:01] AUTH: Failed login for user=root from 45.33.32.156
+[2024-01-15 10:01:02] AUTH: Failed login for user=admin from 45.33.32.156
+[2024-01-15 10:01:03] AUTH: Failed login for user=administrator from 45.33.32.156
+[2024-01-15 10:01:04] AUTH: Failed login for user=root from 45.33.32.156
+[2024-01-15 10:01:05] AUTH: Failed login for user=test from 45.33.32.156
+[2024-01-15 10:01:06] AUTH: Failed login for user=admin from 45.33.32.156
+[2024-01-15 10:01:07] AUTH: Failed login for user=root from 45.33.32.156
+[2024-01-15 10:01:08] AUTH: Access denied for user=admin from 45.33.32.156
+[2024-01-15 10:01:09] AUTH: Failed login for user=admin from 45.33.32.156
+[2024-01-15 10:02:00] SYSTEM: Blocked malicious IP 45.33.32.156
+[2024-01-15 10:05:00] API: Response 200 for GET /v1/users api_key=sk-prod-abc123def456ghi789jkl012mno
+[2024-01-15 10:05:30] CONFIG: Loading secrets: client_secret = cl_s3cr3t_k3y_v4lu3_2024
+[2024-01-15 10:06:00] ERROR: Unhandled exception in /v1/payments
+[2024-01-15 10:06:01] ERROR: Traceback (most recent call last):
+[2024-01-15 10:06:02] ERROR:   File "/app/payments/process.py", line 89
+[2024-01-15 10:06:03] ERROR:     return stripe.Charge.create(amount=amt)
+[2024-01-15 10:06:04] ERROR: stripe.error.AuthenticationError: Invalid API Key
+[2024-01-15 10:07:00] DEBUG: User data dump: {"name":"John","email":"john.doe@example.com","phone":"+1-555-0123-4567","ssn":"XXX-XX-XXXX"}
+[2024-01-15 10:08:00] CONFIG: Database URL: mysql://appuser:Str0ng_P@ssw0rd@db-prod.internal:3306/maindb
+[2024-01-15 10:09:00] AUDIT: Password change for user admin: password=TempPass!2024
+[2024-01-15 10:10:00] SYSTEM: Debug mode is enabled in production
+[2024-01-15 10:11:00] API: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSJ9.HMAC_SIGNATURE used for /admin

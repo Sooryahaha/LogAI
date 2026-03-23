@@ -1,0 +1,33 @@
+2024-01-15 08:00:01 INFO  Application starting up...
+2024-01-15 08:00:02 INFO  Loading configuration from /etc/app/config.yaml
+2024-01-15 08:00:03 INFO  Database connection established
+2024-01-15 08:00:04 INFO  Server listening on port 8080
+2024-01-15 08:01:15 INFO  GET /api/users 200 12ms
+2024-01-15 08:01:30 ERROR Failed login attempt from 10.0.0.55 user=admin
+2024-01-15 08:01:31 ERROR Failed login attempt from 10.0.0.55 user=admin
+2024-01-15 08:01:32 ERROR Failed login attempt from 10.0.0.55 user=admin
+2024-01-15 08:01:33 ERROR Failed login attempt from 10.0.0.55 user=admin
+2024-01-15 08:01:34 ERROR Failed login attempt from 10.0.0.55 user=admin
+2024-01-15 08:01:35 ERROR Failed login attempt from 10.0.0.55 user=admin
+2024-01-15 08:01:36 WARN  Brute force threshold exceeded for IP 10.0.0.55
+2024-01-15 08:02:00 INFO  GET /api/dashboard 200 45ms
+2024-01-15 08:02:15 DEBUG Database query: SELECT * FROM users WHERE email='john@company.com'
+2024-01-15 08:02:20 WARN  Sensitive configuration loaded: api_key = AKIA4F7GXHP2EXAMPLE1
+2024-01-15 08:02:21 DEBUG Connection string: postgres://dbadmin:p4$$w0rd_s3cur3@db.internal:5432/prod
+2024-01-15 08:02:22 ERROR Traceback (most recent call last):
+2024-01-15 08:02:23 ERROR   File "/app/services/auth.py", line 142, in authenticate
+2024-01-15 08:02:24 ERROR     raise AuthenticationError("Invalid token")
+2024-01-15 08:02:25 ERROR AuthenticationError: Invalid token
+2024-01-15 08:03:00 INFO  POST /api/data 201 89ms
+2024-01-15 08:03:15 WARN  token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.signature
+2024-01-15 08:03:30 DEBUG password=Welcome2024! set for new user account
+2024-01-15 08:03:45 INFO  Email notification sent to admin@internal-corp.com
+2024-01-15 08:04:00 WARN  DEBUG = true in production configuration
+2024-01-15 08:04:15 INFO  GET /api/reports 200 33ms
+2024-01-15 08:04:30 ERROR Internal server error on /api/export - NullPointerException
+2024-01-15 08:04:45 INFO  User session terminated for security@company.com
+2024-01-15 08:05:00 WARN  secret = s3cr3t_k3y_pr0duct10n_2024_v2
+2024-01-15 08:05:15 INFO  Blocked IP 203.0.113.42 - suspicious activity detected
+2024-01-15 08:05:30 INFO  Application shutdown initiated
+2024-01-15 08:05:31 INFO  Closing database connections
+2024-01-15 08:05:32 INFO  Server stopped gracefully
