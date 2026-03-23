@@ -56,32 +56,14 @@ Contains the regular expressions that drive the entire detection.
 
 ---
 
-### 4. `backend/app/services/log_analyzer.py` (The Auditor)
-Handles logic that requires "state" across multiple lines.
-
-- **Line 31:** `BRUTE_FORCE_THRESHOLD` is set to 5.
-- **Lines 61-68:** Collects failed login attempts into a list.
-- **Lines 99-111:** If the count exceeds the threshold, it marks a `brute_force` finding at the exact line where the threshold was triggered.
-- **Lines 114-127:** Tracks IP addresses and flags any IP appearing more than 10 times as a `suspicious_ip`.
-- **Line 129:** Generates a stats dictionary with totals for the response dashboard.
-
----
-
-## 🧪 Verified Test Scenarios
-
-The following scenarios were verified using `run_tests.py` and matched the expected security outputs:
-
-### Scenario 1: Basic Sensitive Data Leak
-**Input:** Log with email, password, and API key.
-**Result:** Detected All 3. `Risk: High`, `Action: Masked`.
-
-### Scenario 2: Stack Trace + Error Leak
-**Input:** Single Java exception and debug stack trace.
-**Result:** Detected `stack_trace` and `debug_leak`. `Risk: Medium`.
-
-### Scenario 3: Brute Force Detection
-**Input:** 5 consecutive "login failed" messages.
-**Result:** Detected `brute_force`. `Risk: Critical`.
+### 6. Built-in Test Scenarios
+The frontend now includes a "Test Scenarios" panel that allows you to instantly load verified security leaks for testing and demonstration:
+- **Basic Leak**: Email, password, and API key exposure.
+- **Stack Trace**: Internal system errors and debug leaks.
+- **Brute Force**: 5 consecutive failed login attempts.
+- **Token Exposure**: Sensitive tokens and test environment API keys.
+- **Clean Log**: Control case with no security risks.
+- **Mixed Case**: A complex combination of all the above.
 
 ---
 

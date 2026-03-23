@@ -8,18 +8,44 @@ const INPUT_TYPES = [
   { key: 'chat', label: '💬 Chat', desc: 'Analyze chat messages' },
 ];
 
-const SAMPLE_LOG = `2024-01-15 08:01:30 ERROR Failed login attempt from 10.0.0.55 user=admin
-2024-01-15 08:01:31 ERROR Failed login attempt from 10.0.0.55 user=admin
-2024-01-15 08:01:32 ERROR Failed login attempt from 10.0.0.55 user=admin
-2024-01-15 08:01:33 ERROR Failed login attempt from 10.0.0.55 user=admin
-2024-01-15 08:01:34 ERROR Failed login attempt from 10.0.0.55 user=admin
-2024-01-15 08:01:35 ERROR Failed login attempt from 10.0.0.55 user=admin
-2024-01-15 08:02:20 WARN  api_key = AKIA4F7GXHP2EXAMPLE1
-2024-01-15 08:02:21 DEBUG password=admin123
-2024-01-15 08:02:22 ERROR Traceback (most recent call last):
-2024-01-15 08:03:15 WARN  token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.signature
-2024-01-15 08:03:30 INFO  Email sent to admin@company.com
-2024-01-15 08:04:00 WARN  DEBUG = true in production`;
+const TEST_SCENARIOS = [
+  {
+    id: 'basic',
+    name: '🔒 Basic Leak',
+    type: 'log',
+    content: `2026-03-10 10:00:01 INFO User login\nemail=admin@company.com\npassword=admin123\napi_key=sk-prod-xyz`
+  },
+  {
+    id: 'stack',
+    name: '🛠️ Stack Trace',
+    type: 'log',
+    content: `2026-03-10 ERROR NullPointerException at service.java:45\nDEBUG stack trace: line 45 -> service failed`
+  },
+  {
+    id: 'brute',
+    name: '🛡️ Brute Force',
+    type: 'log',
+    content: `2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin`
+  },
+  {
+    id: 'token',
+    name: '🔑 Token Exposure',
+    type: 'log',
+    content: `INFO token=abc123xyz\nINFO api_key=sk-test-987654`
+  },
+  {
+    id: 'clean',
+    name: '✅ Clean Log',
+    type: 'log',
+    content: `2026-03-10 INFO Server started successfully\n2026-03-10 INFO Health check passed`
+  },
+  {
+    id: 'mixed',
+    name: '🎭 Mixed Case',
+    type: 'log',
+    content: `2026-03-10 INFO User login\nemail=user@test.com\npassword=pass123\n2026-03-10 ERROR Exception at controller.java:22\nDEBUG mode enabled\ntoken=xyz-token-123`
+  }
+];
 
 export default function InputPanel({ onAnalyze, isLoading }) {
   const [inputType, setInputType] = useState('log');
@@ -61,9 +87,10 @@ export default function InputPanel({ onAnalyze, isLoading }) {
     });
   };
 
-  const loadSample = () => {
-    setContent(SAMPLE_LOG);
-    setInputType('log');
+  const loadScenario = (scenario) => {
+    setContent(scenario.content);
+    setInputType(scenario.type);
+    setFileName('');
   };
 
   const toggleOption = (key) => {
@@ -145,22 +172,29 @@ export default function InputPanel({ onAnalyze, isLoading }) {
         id="content-textarea"
       />
 
-      {/* Sample Data Button */}
-      <button
-        onClick={loadSample}
-        style={{
-          background: 'none',
-          border: 'none',
-          color: 'var(--accent-primary)',
-          fontSize: '0.78rem',
-          cursor: 'pointer',
-          padding: '6px 0',
-          fontFamily: 'var(--font-main)',
-        }}
-        id="load-sample-btn"
-      >
-        ⚡ Load sample log data
-      </button>
+      {/* Test Scenarios */}
+      <div className="test-scenarios">
+        <div style={{ fontSize: '0.75rem', opacity: 0.6, marginBottom: '8px' }}>Test Scenarios:</div>
+        <div className="scenario-grid">
+          {TEST_SCENARIOS.map((s) => (
+            <button
+              key={s.id}
+              className="scenario-chip"
+              onClick={() => loadScenario(s)}
+              id={`scenario-btn-${s.id}`}
+            >
+              {s.name}
+            </button>
+          ))}
+          <button
+            className="scenario-chip clear"
+            onClick={() => { setContent(''); setFileName(''); }}
+            id="scenario-btn-clear"
+          >
+            🗑️ Clear
+          </button>
+        </div>
+      </div>
 
       {/* Options */}
       <div className="options-group">

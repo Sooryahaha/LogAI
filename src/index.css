@@ -237,6 +237,51 @@ body {
   color: var(--text-muted);
 }
 
+/* ── Test Scenarios ─────────────────────────────────────────────────────── */
+.test-scenarios {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-glass);
+}
+
+.scenario-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.scenario-chip {
+  padding: 6px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-glass);
+  border-radius: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.scenario-chip:hover {
+  border-color: #000;
+  color: #000;
+  background: #f3f4f6;
+  transform: translateY(-1px);
+}
+
+.scenario-chip.clear {
+  background: #fef2f2;
+  border-color: #fee2e2;
+  color: #991b1b;
+}
+
+.scenario-chip.clear:hover {
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
 /* ── File Upload ────────────────────────────────────────────────────────── */
 .file-drop-zone {
   border: 2px dashed var(--border-glass);

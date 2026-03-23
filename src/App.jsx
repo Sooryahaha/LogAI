@@ -99,7 +99,7 @@ export default function App() {
         color: 'var(--text-muted)',
         fontSize: '0.75rem',
       }}>
-        AI Secure Data Intelligence Platform · Built for SISA Hackathon 2024
+        AI Secure Data Intelligence Platform · Built for SISA
       </footer>
     </div>
   );
