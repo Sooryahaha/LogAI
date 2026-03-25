@@ -119,12 +119,11 @@ class InsightEngine:
             "- Output ONLY valid JSON, no other text"
         )
 
-        response = await self.ai_client.generate(prompt)
-        if not response:
-            return None
-
-        # Parse AI response
         try:
+            response = await self.ai_client.generate(prompt)
+            if not response:
+                return None
+
             # Strip markdown code fences if present
             cleaned = response.strip()
             if cleaned.startswith("```"):
@@ -155,7 +154,7 @@ class InsightEngine:
                         "attack_narrative": attack_narrative,
                     }
         except (json.JSONDecodeError, Exception) as e:
-            logger.warning(f"Failed to parse Gemini response: {e}")
+            logger.warning(f"Failed to generate or parse Gemini response: {e}")
 
         return None
 
