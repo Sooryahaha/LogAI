@@ -275,7 +275,7 @@ HARDCODED_CREDENTIAL_PATTERN = re.compile(
 # ── Log Analysis Patterns ────────────────────────────────────────────────────
 
 FAILED_LOGIN_PATTERN = re.compile(
-    r"(?:failed\s+(?:login|auth(?:entication)?|sign[\s-]?in)|"
+    r"(?:failed\s+(?:login|password|auth(?:entication)?|sign[\s-]?in)|"
     r"invalid\s+(?:credentials?|password|username)|"
     r"(?:login|auth)\s+(?:fail(?:ure|ed)?|denied|rejected)|"
     r"access\s+denied|unauthorized\s+access|"
