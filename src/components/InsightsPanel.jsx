@@ -77,87 +77,78 @@ export default function InsightsPanel({ data }) {
         </div>
       </div>
 
-      {/* SISA Automated Forensic Chain of Custody & Compliance Impact Map */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: 24 }}>
+      {/* Enterprise SOC Insights — Payload Analysis and MITRE Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: 24 }}>
         
-        {/* Forensic Attack Trajectory (SVG) */}
-        {totalFindings > 0 && (
-          <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-              Forensic Attack Trajectory
+        {/* Payload De-obfuscation / Detection Engine */}
+        {findings.length > 0 && (
+          <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', padding: '20px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              Payload Analysis Engine
             </div>
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '220px', padding: '10px 0' }}>
-              <svg width="100%" height="220" viewBox="0 0 400 220" style={{ overflow: 'visible', filter: 'drop-shadow(0 0 10px rgba(14,124,253,0.15))' }}>
-                <defs>
-                  <linearGradient id="sisaMesh" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="rgba(14, 124, 253, 0.4)" />
-                    <stop offset="100%" stopColor="rgba(5, 64, 112, 0.8)" />
-                  </linearGradient>
-                  <radialGradient id="blastRadius" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="rgba(188, 106, 95, 0.8)" />
-                    <stop offset="100%" stopColor="transparent" />
-                  </radialGradient>
-                  <style>
-                    {`
-                      @keyframes dataFall { 0% { stroke-dashoffset: 200; } 100% { stroke-dashoffset: 0; } }
-                      @keyframes pulseNode { 0%, 100% { fill: #bc6a5f; r: 4; } 50% { fill: #FF4444; r: 6; } }
-                      .falling-data { animation: dataFall 1s linear infinite; stroke-dasharray: 10 10; }
-                      .pulsing-node { animation: pulseNode 2s ease-in-out infinite; }
-                    `}
-                  </style>
-                </defs>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
+              <div style={{ padding: '12px', background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '6px' }}>
+                <div style={{ fontSize: '0.65rem', fontWeight: 700, color: '#6B7280', textTransform: 'uppercase', marginBottom: '4px' }}>Matched Signature</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#111827', fontFamily: 'var(--font-mono)' }}>
+                  {Object.keys(typeCounts)[0]?.toUpperCase() || 'UNKNOWN PAYLOAD'}
+                </div>
+              </div>
+
+              <div style={{ padding: '12px', background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '6px', flex: 1 }}>
+                <div style={{ fontSize: '0.65rem', fontWeight: 700, color: '#6B7280', textTransform: 'uppercase', marginBottom: '4px' }}>Extracted Indicator of Compromise (IoC)</div>
+                <div style={{ fontSize: '0.75rem', color: '#DC2626', fontFamily: 'var(--font-mono)', wordBreak: 'break-all', background: '#FEF2F2', padding: '8px', borderRadius: '4px', border: '1px solid #FCA5A5' }}>
+                  {findings[0]?.match || findings[0]?.description || 'Data string extracted'}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* MITRE ATT&CK Enterprise Matrix Heatmap */}
+        {totalFindings > 0 && (
+          <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', padding: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                MITRE ATT&CK® TACTICS HIGHLIGHT
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {/* Render a grid of tactics. If finding relates to tactic, color it Red, else Gray */}
+              {[
+                { tactic: 'Initial Access', types: ['xss', 'sql_injection', 'log4shell'] },
+                { tactic: 'Execution', types: ['command_injection', 'rce'] },
+                { tactic: 'Persistence', types: ['rfi', 'lfi'] },
+                { tactic: 'Privilege Escalation', types: ['idor', 'privilege'] },
+                { tactic: 'Defense Evasion', types: ['waf_bypass', 'obfuscation'] },
+                { tactic: 'Credential Access', types: ['password', 'brute_force', 'secret', 'hardcoded'] },
+                { tactic: 'Discovery', types: ['network', 'scan'] },
+                { tactic: 'Lateral Movement', types: ['ssrf'] },
+              ].map(group => {
+                // Check if any finding matches this tactic group
+                const isActive = findings.some(f => group.types.some(t => f.type.includes(t))) || 
+                                 ai_findings.some(a => group.types.some(t => a.type.toLowerCase().includes(t)));
                 
-                {/* Base Layer - Core App */}
-                <g transform="translate(0, 30)">
-                  <polygon points="200,130 280,170 200,210 120,170" fill="#050A15" stroke="#1A2B50" strokeWidth="2" />
-                  <text x="200" y="195" fill="#7A93B2" fontSize="9" fontFamily="var(--font-mono)" textAnchor="middle" letterSpacing="0.1em">INTERNAL SYSTEMS</text>
-                </g>
-
-                {/* Middle Layer - SISA MESH Firewall */}
-                <g transform="translate(0, -10)">
-                  <polygon points="200,80 280,120 200,160 120,120" fill="url(#sisaMesh)" stroke="#0E7CFD" strokeWidth="2" />
-                  {/* Grid lines inside plane */}
-                  <path d="M 140 110 L 180 130 M 160 100 L 200 120 M 240 100 L 200 120 M 260 110 L 220 130" stroke="rgba(14, 124, 253, 0.3)" strokeWidth="1" />
-                  <text x="200" y="145" fill="#FFF" fontSize="11" fontWeight="900" fontFamily="var(--font-cyber)" textAnchor="middle" letterSpacing="0.2em">SISA MESH</text>
-                </g>
-
-                {/* Top Layer - Threat Origin */}
-                <g transform="translate(0, -50)">
-                  <polygon points="200,30 280,70 200,110 120,70" fill="rgba(188, 106, 95, 0.05)" stroke="#bc6a5f" strokeWidth="2" strokeDasharray="4 4" />
-                  <text x="200" y="95" fill="#bc6a5f" fontSize="9" fontFamily="var(--font-mono)" textAnchor="middle" letterSpacing="0.1em">PUBLIC WEB</text>
-                </g>
-
-                {/* Attack Vector Line & Impact */}
-                <g>
-                  {/* Trajectory */}
-                  <line x1="200" y1="20" x2="200" y2={action === 'blocked' ? 80 : 160} stroke="#bc6a5f" strokeWidth="3" className="falling-data" />
-                  
-                  {/* Threat payload */}
-                  <circle cx="200" cy="40" className="pulsing-node" />
-                  <rect x="210" y="34" width="70" height="14" rx="2" fill="#0A1225" stroke="#bc6a5f" strokeWidth="1" />
-                  <text x="245" y="44" fill="#FFF" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700" textAnchor="middle">
-                    {Object.keys(typeCounts)[0] || 'Payload Request'}
-                  </text>
-
-                  {/* Collision point */}
-                  {action === 'blocked' && (
-                    <>
-                      {/* Blast visual at SISA Mesh layer */}
-                      <circle cx="200" cy="80" r="30" fill="url(#blastRadius)" />
-                      <rect x="170" y="70" width="60" height="20" rx="4" fill="#0E7CFD" />
-                      <text x="200" y="83" fill="#FFF" fontSize="9" fontWeight="900" fontFamily="var(--font-cyber)" textAnchor="middle" letterSpacing="0.05em">BLOCKED</text>
-                    </>
-                  )}
-                  {action !== 'blocked' && (
-                    <>
-                      {/* Passed visual at Core App layer */}
-                      <circle cx="200" cy="160" r="24" fill="url(#blastRadius)" />
-                      <rect x="170" y="150" width="60" height="20" rx="4" fill="#bc6a5f" />
-                      <text x="200" y="163" fill="#FFF" fontSize="9" fontWeight="900" fontFamily="var(--font-cyber)" textAnchor="middle" letterSpacing="0.05em">COMPROMISED</text>
-                    </>
-                  )}
-                </g>
-              </svg>
+                return (
+                  <div key={group.tactic} style={{ 
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+                    padding: '8px 12px', 
+                    background: isActive ? '#FEF2F2' : '#FFFFFF', 
+                    border: `1px solid ${isActive ? '#FCA5A5' : '#E5E7EB'}`, 
+                    borderRadius: '4px' 
+                  }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: isActive ? 700 : 500, color: isActive ? '#B91C1C' : '#4B5563' }}>
+                      {group.tactic}
+                    </span>
+                    {isActive && (
+                      <span style={{ fontSize: '0.65rem', background: '#DC2626', color: '#FFF', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                        DETECTED
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -169,15 +160,15 @@ export default function InsightsPanel({ data }) {
               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                 PCI-DSS Compliance Blast Radius
               </div>
-              <div style={{ fontSize: '0.65rem', background: '#FFF', color: '#000', padding: '2px 6px', fontWeight: 900, borderRadius: '2px' }}>
+              <div style={{ fontSize: '0.65rem', background: 'var(--text-primary)', color: 'var(--bg-primary)', padding: '2px 6px', fontWeight: 900, borderRadius: '4px' }}>
                 {forensic_report.pci_dss_violations.length} VIOLATIONS
               </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {forensic_report.pci_dss_violations.map((violation, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '8px', borderLeft: '2px solid #FFF', background: '#000' }}>
-                  <div style={{ color: '#FFF', fontSize: '1rem', lineHeight: 1 }}>⚠</div>
-                  <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: '#DDD', lineHeight: 1.4 }}>
+                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '10px', borderLeft: '3px solid var(--risk-critical)', background: 'var(--bg-primary)', borderRadius: '0 4px 4px 0', border: '1px solid var(--border-glass)' }}>
+                  <div style={{ color: 'var(--risk-critical)', fontSize: '1rem', lineHeight: 1 }}>⚠</div>
+                  <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', lineHeight: 1.4 }}>
                     {violation}
                   </div>
                 </div>

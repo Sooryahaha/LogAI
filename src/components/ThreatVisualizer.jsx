@@ -58,7 +58,7 @@ export default function ThreatVisualizer({ data }) {
         <div style={{ position: 'relative', width: '140px', height: '140px', flexShrink: 0 }}>
           <svg width="140" height="140" viewBox="0 0 140 140" style={{ transform: 'rotate(-90deg)' }}>
             {/* Background track */}
-            <circle cx="70" cy="70" r={radius} fill="none" stroke="#222" strokeWidth="8" />
+            <circle cx="70" cy="70" r={radius} fill="none" stroke="var(--border-glass)" strokeWidth="8" />
             {/* Animated progress ring */}
             <circle 
               cx="70" cy="70" r={radius} 
@@ -75,10 +75,10 @@ export default function ThreatVisualizer({ data }) {
           </svg>
           {/* Centered text in gauge */}
           <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontFamily: 'var(--font-cyber)', fontSize: '2.5rem', fontWeight: 900, color: '#FFF', lineHeight: 1 }}>
+            <span style={{ fontFamily: 'var(--font-cyber)', fontSize: '2.5rem', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>
               {animatedScore}
             </span>
-            <span style={{ fontSize: '0.6rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 4 }}>
+            <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 4 }}>
               RISK INDEX
             </span>
           </div>
@@ -87,60 +87,21 @@ export default function ThreatVisualizer({ data }) {
         {/* KPI Counters */}
         <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '16px' }}>
           
-          <div style={{ background: '#111', padding: '16px', borderRadius: '4px', border: '1px solid #333' }}>
-            <div style={{ fontSize: '0.6rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Vectored Threats</div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.8rem', color: '#FFF', fontWeight: 800 }}>{animatedAnomalies}</div>
+          <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)' }}>
+            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Vectored Threats</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.8rem', color: 'var(--text-primary)', fontWeight: 800 }}>{animatedAnomalies}</div>
           </div>
           
-          <div style={{ background: '#111', padding: '16px', borderRadius: '4px', border: '1px solid #333' }}>
-            <div style={{ fontSize: '0.6rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Critical Severity</div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.8rem', color: criticalCount > 0 ? 'var(--risk-critical)' : '#FFF', fontWeight: 800 }}>{criticalCount}</div>
+          <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)' }}>
+            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Critical Severity</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.8rem', color: criticalCount > 0 ? 'var(--risk-critical)' : 'var(--text-primary)', fontWeight: 800 }}>{criticalCount}</div>
           </div>
 
-          <div style={{ background: '#111', padding: '16px', borderRadius: '4px', border: '1px solid #333' }}>
-            <div style={{ fontSize: '0.6rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>AI Inferences</div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.8rem', color: ai_findings.length > 0 ? 'var(--risk-high)' : '#FFF', fontWeight: 800 }}>{ai_findings.length}</div>
+          <div style={{ background: 'var(--bg-secondary)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-glass)' }}>
+            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>AI Inferences</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.8rem', color: ai_findings.length > 0 ? 'var(--risk-high)' : 'var(--text-primary)', fontWeight: 800 }}>{ai_findings.length}</div>
           </div>
 
-        </div>
-      </div>
-
-      {/* Tactic Strip */}
-      <div style={{ marginTop: 32, paddingTop: 20, borderTop: '1px solid #222' }}>
-        <div style={{ fontSize: '0.65rem', color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>
-          Identified MITRE Tactics
-        </div>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {/* Mock MITRE strip — derives from findings broadly */}
-          {['Initial Access', 'Execution', 'Persistence', 'Privilege Escalation', 'Defense Evasion', 'Credential Access', 'Discovery', 'Lateral Movement'].map(tactic => {
-            // Very hacky heuristic to simulate MITRE lighting up
-            const isActive = findings.some(f => 
-              (tactic === 'Initial Access' && f.type.includes('sql') || f.type.includes('xss') || f.type.includes('rce')) ||
-              (tactic === 'Credential Access' && f.type.includes('brute') || f.type.includes('password') || f.type.includes('key')) ||
-              (tactic === 'Discovery' && f.type.includes('scan') || f.type.includes('error')) ||
-              (tactic === 'Defense Evasion' && f.type.includes('waf')) ||
-              (tactic === 'Lateral Movement' && f.risk === 'critical')
-            ) || ai_findings.some(a => a.description.toLowerCase().includes(tactic.toLowerCase()));
-            
-            return (
-              <div 
-                key={tactic}
-                style={{ 
-                  padding: '4px 12px', 
-                  fontSize: '0.65rem', 
-                  fontFamily: 'var(--font-mono)',
-                  color: isActive ? '#000' : '#555',
-                  background: isActive ? '#FFF' : '#111',
-                  border: `1px solid ${isActive ? '#FFF' : '#333'}`,
-                  borderRadius: '2px',
-                  boxShadow: isActive ? '0 0 8px rgba(255,255,255,0.2)' : 'none',
-                  transition: 'all 0.3s'
-                }}
-              >
-                {tactic}
-              </div>
-            );
-          })}
         </div>
       </div>
     </div>
