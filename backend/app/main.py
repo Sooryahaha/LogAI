@@ -11,6 +11,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.analyze import router as analyze_router
 from app.core.config import settings
 from app.core.logging_config import generate_request_id, logger, request_id_var
+from app.services.honeypot import HoneypotService
+from app.services.digital_twin import DigitalTwin
+from pydantic import BaseModel
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -57,6 +60,27 @@ async def request_tracing(request: Request, call_next):
 # ── Routes ────────────────────────────────────────────────────────────────────
 app.include_router(analyze_router, tags=["Analysis"])
 
+# ── New Feature Services ──────────────────────────────────────────────────────
+honeypot_service = HoneypotService()
+digital_twin = DigitalTwin()
+
+class HoneypotRequest(BaseModel):
+    target_type: str = "login"
+    asset_name: str = "CorpNet"
+
+@app.post("/api/honeypot")
+async def generate_honeypot(req: HoneypotRequest):
+    result = await honeypot_service.generate(req.target_type, req.asset_name)
+    return result
+
+class TwinRequest(BaseModel):
+    attack_types: list[str] | None = None
+
+@app.post("/api/twin/simulate")
+async def simulate_twin(req: TwinRequest):
+    result = digital_twin.simulate(req.attack_types)
+    return result
+
 
 # ── Health Check ──────────────────────────────────────────────────────────────
 @app.get("/health")
@@ -78,5 +102,7 @@ async def root():
         "endpoints": {
             "analyze": "POST /analyze",
             "health": "GET /health",
+            "honeypot": "POST /api/honeypot",
+            "twin": "POST /api/twin/simulate",
         },
     }

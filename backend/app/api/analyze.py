@@ -13,6 +13,8 @@ from app.services.log_analyzer import LogAnalyzer
 from app.services.parser import Parser
 from app.services.policy_engine import PolicyEngine
 from app.services.risk_engine import RiskEngine
+from app.services.security_graph import SecurityGraph
+from app.core.mcp_gateway import MCPGateway, MCPPermissionDenied
 from app.utils.validators import detect_content_type, is_potentially_malicious
 
 router = APIRouter()
@@ -24,6 +26,7 @@ log_analyzer = LogAnalyzer()
 risk_engine = RiskEngine()
 policy_engine = PolicyEngine()
 insight_engine = InsightEngine()
+security_graph = SecurityGraph()
 
 
 @router.post("/analyze", response_model=AnalyzeResponse)
@@ -34,6 +37,10 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     """
     try:
         logger.info(f"━━━ Analysis Request ━━━ type={request.input_type}")
+
+        # ── Step 0: MCP Gateway Auth ──────────────────────────────────────
+        mcp = MCPGateway(agent_id="ANALYST")
+        mcp.authorize("analyze")
 
         # ── Step 1: Validation ────────────────────────────────────────────
         malicious_warnings = is_potentially_malicious(request.content)
@@ -46,12 +53,17 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         logger.info(f"Content parsed: content_type={content_type}")
 
         # ── Step 3: Detection ─────────────────────────────────────────────
-        findings: list[Finding] = detector.detect(parsed_content)
+        findings: list[Finding] = detector.detect(parsed_content, input_type=request.input_type)
         logger.info(f"Detection complete: {len(findings)} findings")
 
-        # ── Step 4: Log Analysis (if applicable) ──────────────────────────
+        # ── Step 4: Log Analysis & Security Graph ─────────────────────────
         log_stats = None
-        if request.input_type == "log" or request.options.log_analysis:
+        graph_data = None
+        if request.input_type in ("log", "network") or request.options.log_analysis:
+            # Build security graph for logs/network packets
+            mcp.authorize("graph")
+            graph_data = security_graph.build_and_analyze(parsed_content)
+
             log_result = log_analyzer.analyze(parsed_content)
             log_findings = log_result["findings"]
             log_stats = log_result["stats"]
@@ -75,6 +87,13 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         logger.info(f"Risk: score={risk_score}, level={risk_level}")
 
         # ── Step 6: Policy Engine ─────────────────────────────────────────
+        # Destructive actions require RESPONDER auth. If we want to mask/block, check if authorized
+        if request.options.mask or request.options.block_high_risk:
+            try:
+                mcp.authorize("mask_content" if request.options.mask else "block_request")
+            except MCPPermissionDenied:
+                logger.warning("Agent requested active response but lacked permissions. Proceeding in monitor-only mode.")
+
         policy_result = policy_engine.apply(
             content=parsed_content,
             findings=findings,
@@ -85,8 +104,10 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         action = policy_result["action"]
         logger.info(f"Policy action: {action}")
 
-        # ── Step 7: Insight Generation ────────────────────────────────────
+        # ── Step 7: Insight Generation & Deep Scan ────────────────────────
+        mcp.authorize("insights")
         insight_result = await insight_engine.generate(
+            content=parsed_content,
             findings=findings,
             risk_score=risk_score,
             risk_level=risk_level,
@@ -95,7 +116,10 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
         )
         summary = insight_result["summary"]
         insights = insight_result["insights"]
-        logger.info(f"Insights generated: {len(insights)} items")
+        ai_findings = insight_result.get("ai_findings", [])
+        forensic_report = insight_result.get("forensic_report")
+        attack_narrative = insight_result.get("attack_narrative")
+        logger.info(f"Insights generated: {len(insights)} items, ai_findings={len(ai_findings)}")
 
         # ── Step 8: Build Response ────────────────────────────────────────
         # Sort findings by line number for clean output
@@ -109,11 +133,19 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             risk_level=risk_level,
             action=action,
             insights=insights,
+            ai_findings=ai_findings,
+            forensic_report=forensic_report,
+            attack_narrative=attack_narrative,
+            security_graph=graph_data,
+            mcp_audit=mcp.get_audit_summary(),
         )
 
         logger.info(f"━━━ Analysis Complete ━━━ findings={len(findings)}, action={action}")
         return response
 
+    except MCPPermissionDenied as e:
+        logger.error(f"MCP Auth denied: {e}")
+        raise HTTPException(status_code=403, detail=str(e))
     except ValueError as e:
         logger.error(f"Validation error: {e}")
         raise HTTPException(status_code=400, detail=str(e))

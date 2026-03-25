@@ -1,9 +1,10 @@
 """
-AI Client — async HTTP client for Ollama local LLM.
-Provides graceful fallback if Ollama is unavailable.
+AI Client — Google Gemini API client for cybersecurity log analysis.
+Provides graceful fallback if Gemini is unavailable or API key not set.
 """
 
-import httpx
+from google import genai
+from google.genai import types
 
 from app.core.config import settings
 from app.core.logging_config import logger
@@ -11,54 +12,55 @@ from app.core.logging_config import logger
 
 class AIClient:
     """
-    Async client for Ollama local LLM inference.
+    Async-compatible client for Google Gemini LLM inference.
     Used only for insight generation — detection is always deterministic.
     """
 
     def __init__(self):
-        self.base_url = settings.OLLAMA_BASE_URL
-        self.model = settings.OLLAMA_MODEL
-        self.timeout = settings.OLLAMA_TIMEOUT
+        self.model_name = settings.GEMINI_MODEL
+        self.api_key = settings.GEMINI_API_KEY
+        self.client = None
+
+        if self.api_key:
+            try:
+                self.client = genai.Client(api_key=self.api_key)
+                logger.info(f"Gemini AI client initialized (model={self.model_name})")
+            except Exception as e:
+                logger.error(f"Failed to initialize Gemini Client: {e}")
+                self.client = None
+        else:
+            logger.warning("GEMINI_API_KEY not set — AI insights disabled, using rule-based fallback")
 
     async def generate(self, prompt: str) -> str | None:
         """
-        Send a prompt to Ollama and return the generated text.
-        Returns None if Ollama is unavailable.
+        Send a prompt to Gemini and return the generated text.
+        Returns None if Gemini is unavailable.
         """
+        if not self.client:
+            return None
+
         try:
-            async with httpx.AsyncClient(timeout=self.timeout) as client:
-                response = await client.post(
-                    f"{self.base_url}/api/generate",
-                    json={
-                        "model": self.model,
-                        "prompt": prompt,
-                        "stream": False,
-                        "options": {
-                            "temperature": 0.3,
-                            "num_predict": 256,
-                        },
-                    },
-                )
-                response.raise_for_status()
-                data = response.json()
-                result = data.get("response", "").strip()
-                logger.info(f"Ollama response received ({len(result)} chars)")
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.3,
+                    max_output_tokens=1024,
+                ),
+            )
+
+            if response and response.text:
+                result = response.text.strip()
+                logger.info(f"Gemini response received ({len(result)} chars)")
                 return result
-        except httpx.ConnectError:
-            logger.warning("Ollama not available — using rule-based fallback")
+
+            logger.warning("Gemini returned empty response")
             return None
-        except httpx.TimeoutException:
-            logger.warning("Ollama request timed out — using rule-based fallback")
-            return None
+
         except Exception as e:
-            logger.error(f"Ollama error: {e} — using rule-based fallback")
+            logger.error(f"Gemini error: {e} — using rule-based fallback")
             return None
 
     async def is_available(self) -> bool:
-        """Check if Ollama is running and accessible."""
-        try:
-            async with httpx.AsyncClient(timeout=5) as client:
-                response = await client.get(f"{self.base_url}/api/tags")
-                return response.status_code == 200
-        except Exception:
-            return False
+        """Check if Gemini is configured and accessible."""
+        return self.client is not None

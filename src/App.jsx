@@ -3,6 +3,7 @@ import InputPanel from './components/InputPanel';
 import LogViewer from './components/LogViewer';
 import InsightsPanel from './components/InsightsPanel';
 import ResultDisplay from './components/ResultDisplay';
+import ThreatVisualizer from './components/ThreatVisualizer';
 import { analyzeContent } from './services/api';
 
 export default function App() {
@@ -50,32 +51,34 @@ export default function App() {
         <div className="results-area">
           {error && (
             <div className="error-message fade-in">
-              <span>❌</span> {error}
+              <span>[!]</span> {error}
             </div>
           )}
 
           {!result && !isLoading && !error && (
             <div className="results-placeholder glass-card">
-              <div className="placeholder-icon">🛡️</div>
+              <p style={{ fontWeight: 600, fontSize: '1.2rem', color: '#FFF', marginBottom: '8px' }}>SYSTEM IDLE</p>
               <p>
-                Upload a log file or paste content to analyze.
-                The platform will detect sensitive data, score risks,
-                and generate security insights.
+                Awaiting datastream. The autonomous mesh will intercept threats, engage deception layers,
+                and generate forensic insight from any provided payload.
               </p>
             </div>
           )}
 
           {isLoading && (
-            <div className="results-placeholder glass-card fade-in">
+            <div className="results-placeholder glass-card fade-in" style={{ borderColor: 'var(--accent-primary)' }}>
               <div className="placeholder-icon">
                 <span className="spinner" style={{ width: 32, height: 32 }} />
               </div>
-              <p>Analyzing content — detecting patterns, scoring risks...</p>
+              <p style={{ letterSpacing: '0.1em' }}>INITIALIZING SCAN...</p>
             </div>
           )}
 
           {result && (
             <>
+              {/* Peak Visualizer */}
+              <ThreatVisualizer data={result} />
+
               {/* Insights Panel */}
               <InsightsPanel data={result} />
 

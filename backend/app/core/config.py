@@ -10,10 +10,9 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
 
-    # Ollama configuration
-    OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3"
-    OLLAMA_TIMEOUT: int = 30
+    # Google Gemini configuration
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.0-flash"
 
     # File upload limits
     MAX_FILE_SIZE_MB: int = 10

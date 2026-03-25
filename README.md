@@ -96,4 +96,4 @@ The frontend now includes a "Test Scenarios" panel that allows you to instantly 
 
 ---
 
-Built with ❤️ for Security Professionals.
+Built for Security Professionals.

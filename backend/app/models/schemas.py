@@ -23,7 +23,7 @@ class AnalyzeRequest(BaseModel):
 
     input_type: str = Field(
         ...,
-        description="Type of input: text | file | sql | chat | log",
+        description="Type of input: text | file | sql | chat | log | network",
     )
     content: str = Field(
         ...,
@@ -38,7 +38,7 @@ class AnalyzeRequest(BaseModel):
     @field_validator("input_type")
     @classmethod
     def validate_input_type(cls, v: str) -> str:
-        allowed = {"text", "file", "sql", "chat", "log"}
+        allowed = {"text", "file", "sql", "chat", "log", "network"}
         if v.lower() not in allowed:
             raise ValueError(f"input_type must be one of {allowed}")
         return v.lower()
@@ -72,3 +72,8 @@ class AnalyzeResponse(BaseModel):
     risk_level: str
     action: str
     insights: list[str]
+    ai_findings: list[dict] = Field(default_factory=list)
+    forensic_report: dict | None = None
+    attack_narrative: str | None = None
+    security_graph: dict | None = None
+    mcp_audit: dict | None = None

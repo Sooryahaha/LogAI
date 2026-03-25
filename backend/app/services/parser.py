@@ -38,7 +38,7 @@ class Parser:
         if not parser_fn:
             raise ValueError(f"Unsupported input type: {input_type}")
 
-        if input_type.lower() == "file":
+        if input_type.lower() == "file" or file_name:
             parsed = self._parse_file(content, file_name)
         else:
             parsed = parser_fn(content)
