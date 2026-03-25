@@ -77,51 +77,79 @@ export default function InsightsPanel({ data }) {
         </div>
       </div>
 
-      {/* Active Threat Matrix (Mini-Charts) */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: 24 }}>
-        {/* Risk Breakdown Chart */}
+      {/* SISA Automated Forensic Chain of Custody & Compliance Impact Map */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: 24 }}>
+        
+        {/* Forensic Attack Trajectory (SVG) */}
         {totalFindings > 0 && (
-          <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', padding: '16px' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-              Threat Gravity Matrix
+          <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              Forensic Attack Trajectory
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {Object.entries(riskCounts).map(([level, count]) => {
-                if (count === 0) return null;
-                const widthPercent = (count / maxRisk) * 100;
-                return (
-                  <div key={level} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ width: '60px', fontSize: '0.7rem', textTransform: 'uppercase', fontWeight: 600, color: riskColorMap[level] }}>{level}</div>
-                    <div style={{ flex: 1, height: '6px', background: 'var(--bg-primary)', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{ width: `${widthPercent}%`, height: '100%', background: riskColorMap[level], boxShadow: `0 0 8px ${riskColorMap[level]}` }} />
-                    </div>
-                    <div style={{ width: '20px', fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', textAlign: 'right' }}>{count}</div>
-                  </div>
-                );
-              })}
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '120px' }}>
+              <svg width="100%" height="100" viewBox="0 0 400 100" style={{ maxWidth: '100%', overflow: 'visible' }}>
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#FFF" />
+                  </marker>
+                  <marker id="blocked_arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#444" />
+                  </marker>
+                </defs>
+                {/* Nodes */}
+                <rect x="10" y="30" width="80" height="40" rx="4" fill="#0A0A0A" stroke="#555" strokeWidth="1" />
+                <text x="50" y="54" fill="#FFF" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">Threat Source</text>
+                
+                <rect x="160" y="30" width="80" height="40" rx="4" fill="#000" stroke="#FFF" strokeWidth="2" />
+                <text x="200" y="54" fill="#FFF" fontSize="10" fontFamily="var(--font-cyber)" fontWeight="bold" textAnchor="middle">SISA MESH</text>
+
+                <rect x="310" y="30" width="80" height="40" rx="4" fill="#0A0A0A" stroke="#333" strokeWidth="1" />
+                <text x="350" y="54" fill="#666" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">Internal Asset</text>
+
+                {/* Edges */}
+                <line x1="90" y1="50" x2="150" y2="50" stroke="#FFF" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arrow)" />
+                <line x1="240" y1="50" x2="300" y2="50" stroke="#333" strokeWidth="2" markerEnd="url(#blocked_arrow)" />
+
+                {/* Labels */}
+                <text x="125" y="42" fill="#CCC" fontSize="8" fontFamily="var(--font-mono)" textAnchor="middle">
+                  {Object.keys(typeCounts)[0] || 'payload'}
+                </text>
+
+                {action === 'blocked' && (
+                  <text x="272" y="42" fill="#FFF" fontSize="9" fontWeight="bold" fontFamily="var(--font-mono)" textAnchor="middle">
+                    [BLOCKED]
+                  </text>
+                )}
+                {action !== 'blocked' && (
+                  <text x="272" y="42" fill="#666" fontSize="8" fontFamily="var(--font-mono)" textAnchor="middle">
+                    [PASSED]
+                  </text>
+                )}
+              </svg>
             </div>
           </div>
         )}
 
-        {/* Top Detected Signatures */}
-        {Object.keys(typeCounts).length > 0 && (
+        {/* PCI-DSS Impact Map */}
+        {(forensic_report?.pci_dss_violations && forensic_report.pci_dss_violations.length > 0) && (
           <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', padding: '16px' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-              Extracted Signatures
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                PCI-DSS Compliance Blast Radius
+              </div>
+              <div style={{ fontSize: '0.65rem', background: '#FFF', color: '#000', padding: '2px 6px', fontWeight: 900, borderRadius: '2px' }}>
+                {forensic_report.pci_dss_violations.length} VIOLATIONS
+              </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {Object.entries(typeCounts).sort((a,b) => b[1] - a[1]).slice(0, 5).map(([type, count]) => {
-                const widthPercent = (count / maxType) * 100;
-                return (
-                  <div key={type} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ width: '100px', fontSize: '0.7rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-secondary)' }} title={type}>{type}</div>
-                    <div style={{ flex: 1, height: '4px', background: 'var(--bg-primary)', borderRadius: '2px', overflow: 'hidden' }}>
-                      <div style={{ width: `${widthPercent}%`, height: '100%', background: 'var(--accent-primary)' }} />
-                    </div>
-                    <div style={{ width: '20px', fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', textAlign: 'right' }}>{count}</div>
+              {forensic_report.pci_dss_violations.map((violation, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '8px', borderLeft: '2px solid #FFF', background: '#000' }}>
+                  <div style={{ color: '#FFF', fontSize: '1rem', lineHeight: 1 }}>⚠</div>
+                  <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: '#DDD', lineHeight: 1.4 }}>
+                    {violation}
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
         )}

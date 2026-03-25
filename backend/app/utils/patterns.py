@@ -217,7 +217,7 @@ LDAP_INJECTION_PATTERN = re.compile(
 # ── IDOR Patterns ─────────────────────────────────────────────────────────────
 
 IDOR_PATTERN = re.compile(
-    r"(?:/(?:api|v\d+)/(?:user|account|order|profile|admin)/\d+",
+    r"(?:/(?:api|v\d+)/(?:user|account|order|profile|admin)/\d+)",
     re.IGNORECASE,
 )
 
@@ -325,6 +325,7 @@ SECURITY_PATTERNS = {
     "waf_bypass": WAF_BYPASS_PATTERN,
     "open_redirect": OPEN_REDIRECT_PATTERN,
     "ldap_injection": LDAP_INJECTION_PATTERN,
+    "idor": IDOR_PATTERN,
     "stack_trace": STACK_TRACE_PATTERN,
     "debug_leak": DEBUG_MODE_PATTERN,
     "hardcoded_credential": HARDCODED_CREDENTIAL_PATTERN,

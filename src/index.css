@@ -11,32 +11,32 @@
 }
 
 :root {
-  /* Elite Minimalist Palette - Deep Dark */
-  --bg-primary: #0A0A0A;
-  --bg-secondary: #0A0A0A;
-  --bg-card: #111111;
-  --border-glass: #222222;
+  /* Elite Minimalist Palette - True Black & White */
+  --bg-primary: #000000;
+  --bg-secondary: #050505;
+  --bg-card: #0A0A0A;
+  --border-glass: #333333;
   --border-active: #FFFFFF;
 
   /* Accent colors - Black & White */
   --accent-primary: #FFFFFF;
-  --accent-secondary: #AAAAAA;
+  --accent-secondary: #CCCCCC;
 
   /* Text */
   --text-primary: #FFFFFF;
-  --text-secondary: #BBBBBB;
+  --text-secondary: #CCCCCC;
   --text-muted: #888888;
 
-  /* Risk level colors - Electric Accents */
-  --risk-critical: #FF2D2D;
-  --risk-high: #FF6B00;
-  --risk-medium: #FFB800;
-  --risk-low: #00C264;
+  /* Risk level colors - Pure Grayscale */
+  --risk-critical: #FFFFFF;
+  --risk-high: #DDDDDD;
+  --risk-medium: #AAAAAA;
+  --risk-low: #666666;
 
   /* Semantic */
-  --success: #00C264;
-  --warning: #FFB800;
-  --error: #FF2D2D;
+  --success: #FFFFFF;
+  --warning: #CCCCCC;
+  --error: #FFFFFF;
   --info: #FFFFFF;
 
   /* Typography */
@@ -478,7 +478,8 @@ body {
   background: transparent;
 }
 
-.risk-badge.critical, .stat-value.risk-critical { color: var(--risk-critical); }
+.risk-badge.critical { background: #FFFFFF; color: #000000; border-color: #FFFFFF; font-weight: 900; }
+.stat-value.risk-critical { color: var(--risk-critical); text-shadow: 0 0 10px rgba(255,255,255,0.8); }
 .risk-badge.high, .stat-value.risk-high { color: var(--risk-high); }
 .risk-badge.medium, .stat-value.risk-medium { color: var(--risk-medium); }
 .risk-badge.low, .stat-value.risk-low { color: var(--risk-low); }
@@ -538,12 +539,17 @@ body {
 }
 
 .attack-narrative::before {
-  content: 'THREAT NARRATOR [ACTIVE]';
+  content: '[ SISA CYBER-INTELLIGENCE ENGINE ]';
   display: block;
   font-size: 0.65rem;
-  color: var(--risk-critical);
+  color: #000000;
+  background: #FFFFFF;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-weight: 900;
   margin-bottom: 12px;
   letter-spacing: 0.1em;
+  display: inline-block;
 }
 
 /* Typewriter cursor effect */
@@ -590,7 +596,7 @@ body {
   font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid currentColor;
 }
-.action-badge.blocked { color: var(--risk-critical); border-color: var(--risk-critical); }
+.action-badge.blocked { background: #FFFFFF; color: #000000; border-color: #FFFFFF; font-weight: 900; }
 .action-badge.allowed { color: var(--success); border-color: var(--success); }
 .action-badge.masked { color: var(--warning); border-color: var(--warning); }
 

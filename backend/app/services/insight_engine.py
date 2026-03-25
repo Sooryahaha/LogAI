@@ -108,6 +108,10 @@ class InsightEngine:
             '    "remediation": [\n'
             '      "Step 1: Immediate action",\n'
             '      "Step 2: Follow-up action"\n'
+            '    ],\n'
+            '    "pci_dss_violations": [\n'
+            '      "Requirement 6.5: Prevent common coding vulnerabilities",\n'
+            '      "Requirement 10.2: Implement audit trails"\n'
             '    ]\n'
             '  }\n'
             "}\n\n"
@@ -349,11 +353,26 @@ class InsightEngine:
         if not remediation:
             remediation.append("Review and remediate all flagged findings based on severity")
 
+        # Build PCI-DSS Impact Map
+        pci_violations = []
+        if "sql_injection" in type_counts or "xss" in type_counts or "xxe" in type_counts or "command_injection" in type_counts:
+            pci_violations.append("Req 6.5 - Code vulnerabilities (OWASP Top 10)")
+        if "password" in type_counts or "secret" in type_counts or "api_key" in type_counts or "hardcoded_credential" in type_counts:
+            pci_violations.append("Req 8.2 - Authentication methods & credential exposure")
+            pci_violations.append("Req 3.4 - Render PAN and sensitive authentication data unreadable")
+        if "brute_force" in type_counts or "failed_login" in type_counts:
+            pci_violations.append("Req 8.1 - Limit repeated access attempts")
+        if "error_leak" in type_counts or "stack_trace" in type_counts or "debug_leak" in type_counts:
+            pci_violations.append("Req 6.5.6 - High-risk vulnerabilities & sensitive data exposure")
+        if not pci_violations:
+            pci_violations.append("Req 10.2 - Implement automated audit trails for all system components")
+
         return {
             "status": status,
             "root_cause": root_cause,
             "patterns": patterns,
             "remediation": remediation,
+            "pci_dss_violations": list(set(pci_violations)),
         }
 
     @staticmethod
