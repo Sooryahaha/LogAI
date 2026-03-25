@@ -7,6 +7,8 @@ import ResultDisplay from './components/ResultDisplay';
 import ThreatVisualizer from './components/ThreatVisualizer';
 import IntelDashboard from './pages/IntelDashboard';
 import { analyzeContent } from './services/api';
+import AiSummary from './components/AiSummary';
+import LogAnalytics from './components/LogAnalytics';
 
 function MainScanner() {
   const [result, setResult] = useState(null);
@@ -97,6 +99,8 @@ function MainScanner() {
           {/* ── Results ── */}
           {result && (
             <>
+              <AiSummary data={result} />
+              <LogAnalytics data={result} />
               <ThreatVisualizer data={result} />
               <InsightsPanel data={result} />
               <ResultDisplay data={result} />
