@@ -387,6 +387,6 @@ RISK_MAP: dict[str, str] = {
 def url_decode_content(content: str) -> str:
     """Return URL-decoded version of content for encoded payload detection."""
     try:
-        return urllib.parse.unquote(content)
+        return urllib.parse.unquote_plus(content)
     except Exception:
         return content

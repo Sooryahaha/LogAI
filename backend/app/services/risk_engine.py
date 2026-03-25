@@ -60,6 +60,8 @@ class RiskEngine:
         # Override to critical if any critical finding exists
         if severity_counts["critical"] > 0:
             risk_level = "critical"
+        elif severity_counts["high"] > 0 and risk_level in ["low", "medium"]:
+            risk_level = "high"
 
         logger.info(
             f"Risk calculation: score={risk_score}, level={risk_level}, "

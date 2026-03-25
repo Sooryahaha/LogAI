@@ -36,10 +36,9 @@ export default function LogViewer({ content, findings }) {
   return (
     <div className="glass-card slide-up">
       <div className="card-title">
-        <span className="icon">📋</span>
-        Log Viewer
-        <span style={{ marginLeft: 'auto', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-          {lines.length} lines · {findings.length} findings
+        LOG VIEWER
+        <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'var(--text-dim)', letterSpacing: '0.08em' }}>
+          {lines.length} LINES · {findings.length} FINDINGS
         </span>
       </div>
       <div className="log-viewer" id="log-viewer">

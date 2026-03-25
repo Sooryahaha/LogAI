@@ -71,6 +71,17 @@ class Detector:
                         if not self._is_duplicate(findings, finding):
                             findings.append(finding)
 
+        # ── Brute Force Aggregation ──────────────────────────────────────────────────
+        failed_login_count = 0
+        from app.utils.patterns import LOG_PATTERNS
+        for line in lines:
+            if LOG_PATTERNS["failed_login"].search(line):
+                failed_login_count += 1
+        
+        if failed_login_count >= 5:
+            findings.append(Finding(type="brute_force", risk="critical", line=1))
+            logger.warning(f"Brute force detected: {failed_login_count} failed logins")
+
         # ── F5 ASM Compound Finding ───────────────────────────────────────────
         # Detect WAF bypass: request_status=passed + violation_rating >= 4 + XSS in URI
         if is_f5_asm:
