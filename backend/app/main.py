@@ -69,8 +69,14 @@ class HoneypotRequest(BaseModel):
     asset_name: str = "CorpNet"
 
 @app.post("/api/honeypot")
-async def generate_honeypot(req: HoneypotRequest):
+async def generate_honeypot(req: HoneypotRequest, request: Request):
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        client_ip = forwarded.split(",")[0]
+        
     result = await honeypot_service.generate(req.target_type, req.asset_name)
+    result["attacker_ip"] = client_ip
     return result
 
 class TwinRequest(BaseModel):
