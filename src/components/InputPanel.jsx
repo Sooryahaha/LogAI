@@ -189,10 +189,10 @@ export default function InputPanel({ onAnalyze, isLoading }) {
           onClick={() => toggleOption('containment')}
         >
           <div className="protocol-title">
-            ZERO-TRUST CONTAINMENT
-            <span className="protocol-badge">[ACTIVE]</span>
+            Auto-Block Threats
+            <span className="protocol-badge">ACTIVE</span>
           </div>
-          <div className="protocol-desc">Auto-blocks traffic exceeding critical risk thresholds prior to application layer execution.</div>
+          <div className="protocol-desc">Automatically stops attacks that exceed normal risk limits before they reach your system.</div>
         </div>
 
         <div 
@@ -200,10 +200,10 @@ export default function InputPanel({ onAnalyze, isLoading }) {
           onClick={() => toggleOption('deepScan')}
         >
           <div className="protocol-title">
-            DEEP-PACKET HEURISTIC SCAN
-            <span className="protocol-badge">[ACTIVE]</span>
+            Deep AI Scan
+            <span className="protocol-badge">ACTIVE</span>
           </div>
-          <div className="protocol-desc">Engages AI layer to detect zero-day evasion techniques and contextual logic bypasses.</div>
+          <div className="protocol-desc">Uses Artificial Intelligence to find hidden attacks and new techniques hackers might use.</div>
         </div>
 
         <div 
@@ -211,10 +211,10 @@ export default function InputPanel({ onAnalyze, isLoading }) {
           onClick={() => toggleOption('obfuscation')}
         >
           <div className="protocol-title">
-            QUANTUM DATA OBFUSCATION
-            <span className="protocol-badge">[ACTIVE]</span>
+            Hide Sensitive Data
+            <span className="protocol-badge">ACTIVE</span>
           </div>
-          <div className="protocol-desc">Surgically redacts PII, tokens, and credentials from the data stream before downstream processing.</div>
+          <div className="protocol-desc">Removes credit card numbers, passwords, and personal info from the logs to keep them safe.</div>
         </div>
       </div>
 

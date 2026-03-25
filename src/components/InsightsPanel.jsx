@@ -86,45 +86,77 @@ export default function InsightsPanel({ data }) {
             <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
               Forensic Attack Trajectory
             </div>
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '120px' }}>
-              <svg width="100%" height="100" viewBox="0 0 400 100" style={{ maxWidth: '100%', overflow: 'visible' }}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '220px', padding: '10px 0' }}>
+              <svg width="100%" height="220" viewBox="0 0 400 220" style={{ overflow: 'visible', filter: 'drop-shadow(0 0 10px rgba(14,124,253,0.15))' }}>
                 <defs>
-                  <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#FFF" />
-                  </marker>
-                  <marker id="blocked_arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#444" />
-                  </marker>
+                  <linearGradient id="sisaMesh" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="rgba(14, 124, 253, 0.4)" />
+                    <stop offset="100%" stopColor="rgba(5, 64, 112, 0.8)" />
+                  </linearGradient>
+                  <radialGradient id="blastRadius" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="rgba(188, 106, 95, 0.8)" />
+                    <stop offset="100%" stopColor="transparent" />
+                  </radialGradient>
+                  <style>
+                    {`
+                      @keyframes dataFall { 0% { stroke-dashoffset: 200; } 100% { stroke-dashoffset: 0; } }
+                      @keyframes pulseNode { 0%, 100% { fill: #bc6a5f; r: 4; } 50% { fill: #FF4444; r: 6; } }
+                      .falling-data { animation: dataFall 1s linear infinite; stroke-dasharray: 10 10; }
+                      .pulsing-node { animation: pulseNode 2s ease-in-out infinite; }
+                    `}
+                  </style>
                 </defs>
-                {/* Nodes */}
-                <rect x="10" y="30" width="80" height="40" rx="4" fill="#0A0A0A" stroke="#555" strokeWidth="1" />
-                <text x="50" y="54" fill="#FFF" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">Threat Source</text>
                 
-                <rect x="160" y="30" width="80" height="40" rx="4" fill="#000" stroke="#FFF" strokeWidth="2" />
-                <text x="200" y="54" fill="#FFF" fontSize="10" fontFamily="var(--font-cyber)" fontWeight="bold" textAnchor="middle">SISA MESH</text>
+                {/* Base Layer - Core App */}
+                <g transform="translate(0, 30)">
+                  <polygon points="200,130 280,170 200,210 120,170" fill="#050A15" stroke="#1A2B50" strokeWidth="2" />
+                  <text x="200" y="195" fill="#7A93B2" fontSize="9" fontFamily="var(--font-mono)" textAnchor="middle" letterSpacing="0.1em">INTERNAL SYSTEMS</text>
+                </g>
 
-                <rect x="310" y="30" width="80" height="40" rx="4" fill="#0A0A0A" stroke="#333" strokeWidth="1" />
-                <text x="350" y="54" fill="#666" fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">Internal Asset</text>
+                {/* Middle Layer - SISA MESH Firewall */}
+                <g transform="translate(0, -10)">
+                  <polygon points="200,80 280,120 200,160 120,120" fill="url(#sisaMesh)" stroke="#0E7CFD" strokeWidth="2" />
+                  {/* Grid lines inside plane */}
+                  <path d="M 140 110 L 180 130 M 160 100 L 200 120 M 240 100 L 200 120 M 260 110 L 220 130" stroke="rgba(14, 124, 253, 0.3)" strokeWidth="1" />
+                  <text x="200" y="145" fill="#FFF" fontSize="11" fontWeight="900" fontFamily="var(--font-cyber)" textAnchor="middle" letterSpacing="0.2em">SISA MESH</text>
+                </g>
 
-                {/* Edges */}
-                <line x1="90" y1="50" x2="150" y2="50" stroke="#FFF" strokeWidth="2" strokeDasharray="4 4" markerEnd="url(#arrow)" />
-                <line x1="240" y1="50" x2="300" y2="50" stroke="#333" strokeWidth="2" markerEnd="url(#blocked_arrow)" />
+                {/* Top Layer - Threat Origin */}
+                <g transform="translate(0, -50)">
+                  <polygon points="200,30 280,70 200,110 120,70" fill="rgba(188, 106, 95, 0.05)" stroke="#bc6a5f" strokeWidth="2" strokeDasharray="4 4" />
+                  <text x="200" y="95" fill="#bc6a5f" fontSize="9" fontFamily="var(--font-mono)" textAnchor="middle" letterSpacing="0.1em">PUBLIC WEB</text>
+                </g>
 
-                {/* Labels */}
-                <text x="125" y="42" fill="#CCC" fontSize="8" fontFamily="var(--font-mono)" textAnchor="middle">
-                  {Object.keys(typeCounts)[0] || 'payload'}
-                </text>
-
-                {action === 'blocked' && (
-                  <text x="272" y="42" fill="#FFF" fontSize="9" fontWeight="bold" fontFamily="var(--font-mono)" textAnchor="middle">
-                    [BLOCKED]
+                {/* Attack Vector Line & Impact */}
+                <g>
+                  {/* Trajectory */}
+                  <line x1="200" y1="20" x2="200" y2={action === 'blocked' ? 80 : 160} stroke="#bc6a5f" strokeWidth="3" className="falling-data" />
+                  
+                  {/* Threat payload */}
+                  <circle cx="200" cy="40" className="pulsing-node" />
+                  <rect x="210" y="34" width="70" height="14" rx="2" fill="#0A1225" stroke="#bc6a5f" strokeWidth="1" />
+                  <text x="245" y="44" fill="#FFF" fontSize="8" fontFamily="var(--font-mono)" fontWeight="700" textAnchor="middle">
+                    {Object.keys(typeCounts)[0] || 'Payload Request'}
                   </text>
-                )}
-                {action !== 'blocked' && (
-                  <text x="272" y="42" fill="#666" fontSize="8" fontFamily="var(--font-mono)" textAnchor="middle">
-                    [PASSED]
-                  </text>
-                )}
+
+                  {/* Collision point */}
+                  {action === 'blocked' && (
+                    <>
+                      {/* Blast visual at SISA Mesh layer */}
+                      <circle cx="200" cy="80" r="30" fill="url(#blastRadius)" />
+                      <rect x="170" y="70" width="60" height="20" rx="4" fill="#0E7CFD" />
+                      <text x="200" y="83" fill="#FFF" fontSize="9" fontWeight="900" fontFamily="var(--font-cyber)" textAnchor="middle" letterSpacing="0.05em">BLOCKED</text>
+                    </>
+                  )}
+                  {action !== 'blocked' && (
+                    <>
+                      {/* Passed visual at Core App layer */}
+                      <circle cx="200" cy="160" r="24" fill="url(#blastRadius)" />
+                      <rect x="170" y="150" width="60" height="20" rx="4" fill="#bc6a5f" />
+                      <text x="200" y="163" fill="#FFF" fontSize="9" fontWeight="900" fontFamily="var(--font-cyber)" textAnchor="middle" letterSpacing="0.05em">COMPROMISED</text>
+                    </>
+                  )}
+                </g>
               </svg>
             </div>
           </div>
