@@ -70,6 +70,13 @@ class Detector:
                         finding = Finding(type=pattern_name, risk=risk, line=line_num)
                         if not self._is_duplicate(findings, finding):
                             findings.append(finding)
+                
+            if input_type == "network":
+                syn_count = sum(1 for ln in lines if "TCP SYN" in ln)
+                if syn_count >= 3:
+                    f = Finding(type="syn_flood", risk="critical", line=1)
+                    if not self._is_duplicate(findings, f):
+                        findings.append(f)
 
         # ── Brute Force Aggregation ──────────────────────────────────────────────────
         failed_login_count = 0
