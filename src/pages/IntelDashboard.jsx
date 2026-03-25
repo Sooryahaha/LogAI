@@ -67,7 +67,7 @@ export default function IntelDashboard() {
       <header className="header" style={{ marginBottom: 40 }}>
         <div className="header-left">
           <h1>SISA INTELLIGENCE DASHBOARD</h1>
-          <p className="subtitle" style={{ fontSize: '0.9rem' }}>Deception Mesh & Adversarial Simulation Engine</p>
+          <p className="subtitle" style={{ fontSize: '0.9rem' }}>DECEPTION MESH ◆ ADVERSARIAL SIMULATION ENGINE</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <Link to="/" className="badge" style={{ textDecoration: 'none', padding: '10px 16px', fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s', border: '1px solid var(--border)' }}>
@@ -117,7 +117,7 @@ export default function IntelDashboard() {
               {/* Explanation Panel */}
               <div style={{ background: 'var(--bg-secondary)', borderLeft: '4px solid var(--text-primary)', padding: '20px 24px', marginBottom: 32, borderRadius: '0 var(--r-md) var(--r-md) 0' }}>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: 12, letterSpacing: '0.1em' }}>
-                  HOW IT WORKS: AUTONOMOUS DECEPTION MESH
+                  ◈ HOW IT WORKS: AUTONOMOUS DECEPTION MESH
                 </h3>
                 <p style={{ fontFamily: 'var(--font-main)', fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 12 }}>
                   The <strong>Deception Mesh</strong> acts as a proactive defense mechanism (a "Honeypot"). Instead of waiting for an attacker, it actively deploys fake, high-fidelity corporate assets (like an Admin Login portal or Internal API). 
@@ -234,7 +234,7 @@ export default function IntelDashboard() {
               {/* Explanation Panel */}
               <div style={{ background: 'var(--bg-secondary)', borderLeft: '4px solid var(--text-primary)', padding: '20px 24px', marginBottom: 32, borderRadius: '0 var(--r-md) var(--r-md) 0' }}>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: 12, letterSpacing: '0.1em' }}>
-                  HOW IT WORKS: DIGITAL TWIN SIMULATION
+                  ◈ HOW IT WORKS: DIGITAL TWIN SIMULATION
                 </h3>
                 <p style={{ fontFamily: 'var(--font-main)', fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 12 }}>
                   The <strong>Digital Twin</strong> is a virtualized copy of your network architecture used strictly for adversarial testing. It automatically fires simulated payloads (malicious traffic, XSS, SQLi, and Brute Force attempts) against the internal threat detection engines.
@@ -248,7 +248,9 @@ export default function IntelDashboard() {
               {/* Controls */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, paddingBottom: 24, borderBottom: '1px solid var(--border)' }}>
                 <div style={{ maxWidth: '60%' }}>
-                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--text-primary)', letterSpacing: '0.1em', marginBottom: 8 }}>SECURITY STACK VERIFICATION</h3>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.2rem', color: 'var(--text-primary)', letterSpacing: '0.1em', marginBottom: 8 }}>
+                    ◈ SECURITY STACK VERIFICATION
+                  </h3>
                   <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                     Clicking the button below will map 9 diverse attack vectors—including Log4Shell, SSRF, and LFI—against the SISA core detection pipeline.
                   </p>

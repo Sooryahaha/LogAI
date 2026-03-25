@@ -108,7 +108,7 @@ export default function InsightsPanel({ data }) {
                 borderRadius: 'var(--r-sm)',
               }}>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'var(--text-muted)' }}>
-                  L{f.line || '?'} · {f.type?.toUpperCase()}
+                  L{f.line || '?'} ◆ {f.type?.toUpperCase()}
                 </span>
                 <span className={`risk-badge ${f.risk}`}>{f.risk}</span>
               </div>

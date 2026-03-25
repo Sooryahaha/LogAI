@@ -118,7 +118,7 @@ export default function InputPanel({ onAnalyze, isLoading }) {
 
       {/* Test Scenarios */}
       <div className="test-scenarios">
-        <div className="scenario-label">Quick load &mdash; test scenarios:</div>
+        <div className="scenario-label">▸ QUICK LOAD SCAN SCENARIOS:</div>
         <div className="scenario-grid">
           {TEST_SCENARIOS.map((s) => (
             <button key={s.id} className="scenario-chip" onClick={() => loadScenario(s)}>
@@ -127,7 +127,7 @@ export default function InputPanel({ onAnalyze, isLoading }) {
           ))}
           <button className="scenario-chip clear"
             onClick={() => { setContent(''); setFileName(''); }}>
-            [X] CLEAR
+            ▣ CLEAR SCAN
           </button>
         </div>
       </div>

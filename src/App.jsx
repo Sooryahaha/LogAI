@@ -35,7 +35,7 @@ function MainScanner() {
       <header className="header">
         <div className="header-left">
           <h1>AI SECURE DATA INTELLIGENCE</h1>
-          <p className="subtitle">AI Gateway · Scanner · Log Analyzer · Risk Engine</p>
+          <p className="subtitle">AI GATEWAY ◆ SCANNER ◆ LOG ANALYZER ◆ RISK ENGINE</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div className="header-status">
@@ -67,7 +67,7 @@ function MainScanner() {
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Deploy Deception Honeypots & Run Adversarial Digital Twin Simulations.</p>
             </div>
             <Link to="/intel" style={{ padding: '16px 24px', background: 'var(--text-primary)', color: 'var(--bg-base)', border: 'none', borderRadius: 'var(--r-md)', fontFamily: 'var(--font-display)', fontSize: '0.9rem', fontWeight: 800, textDecoration: 'none', letterSpacing: '0.1em', transition: 'all 0.2s' }}>
-              LAUNCH AI ↗
+              LAUNCH AI AUTH (Click Here) ⇗
             </Link>
           </div>
 
@@ -113,7 +113,7 @@ function MainScanner() {
         fontFamily: 'var(--font-mono)', fontSize: '0.75rem',
         color: 'var(--text-dim)', letterSpacing: '0.12em', textTransform: 'uppercase',
       }}>
-        AI Secure Data Intelligence Platform · SISA Security · {new Date().getFullYear()}
+        AI SECURE DATA INTELLIGENCE PLATFORM ◆ SISA SECURITY ◆ {new Date().getFullYear()}
       </footer>
     </div>
   );
