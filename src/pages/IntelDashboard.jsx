@@ -142,6 +142,19 @@ export default function IntelDashboard() {
               {/* Results */}
               {hpData && (
                 <div className="slide-up">
+
+                  {/* Attacker IP Detection Banner */}
+                  <div style={{ padding: '16px 20px', background: 'var(--bg-secondary)', border: '1px solid var(--border-bright)', borderLeft: '4px solid #FF4444', borderRadius: 'var(--r-md)', marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <h4 style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: '#FF4444', margin: '0 0 4px 0', letterSpacing: '0.1em', textTransform: 'uppercase' }}>[!] Unauthorized Scanner Detected</h4>
+                      <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>The Deception Mesh successfully trapped a reconnaissance probe.</p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: 4, letterSpacing: '0.1em' }}>ATTACKER IP TRACED</div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: '#FF4444', letterSpacing: '0.05em' }}>{hpData.attacker_ip}</div>
+                    </div>
+                  </div>
+
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
                     
                     {/* Generated HTML Code */}
