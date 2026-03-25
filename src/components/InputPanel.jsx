@@ -18,7 +18,7 @@ const TEST_SCENARIOS = [
   { id: 'ssrf', name: 'Internal Access', type: 'log',
     content: `GET /webhook?url=http://169.254.169.254/latest/meta-data/ HTTP/1.1\nHost: api.internal.corp` },
   { id: 'bruteforce', name: 'Password Guessing', type: 'log',
-    content: `Failed password for root from 192.168.1.100 port 22\nFailed password for root from 192.168.1.100 port 22\nFailed password for root from 192.168.1.100 port 22` },
+    content: `Failed password for root from 192.168.1.100 port 22\nFailed password for root from 192.168.1.100 port 22\nFailed password for root from 192.168.1.100 port 22\nFailed password for root from 192.168.1.100 port 22\nFailed password for root from 192.168.1.100 port 22` },
 ];
 
 export default function InputPanel({ onAnalyze, isLoading }) {

@@ -13,14 +13,6 @@ export default function ResultDisplay({ data }) {
 
   return (
     <div className="slide-up" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      {/* Raw JSON Response */}
-      <div className="glass-card">
-          <div className="card-title">API RESPONSE</div>
-        <div className="json-display" id="json-display">
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-      </div>
-
       {/* Findings Table */}
       {findings.length > 0 && (
         <div className="glass-card">
@@ -58,6 +50,14 @@ export default function ResultDisplay({ data }) {
           </div>
         </div>
       )}
+
+      {/* Raw JSON Response */}
+      <div className="glass-card">
+          <div className="card-title">API RESPONSE</div>
+        <div className="json-display" id="json-display">
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
+      </div>
     </div>
   );
 }

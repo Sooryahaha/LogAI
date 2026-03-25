@@ -32,6 +32,7 @@ class Parser:
             "sql": self._parse_sql,
             "chat": self._parse_chat,
             "log": self._parse_log,
+            "network": self._parse_log,
         }
 
         parser_fn = parser_map.get(input_type.lower())
